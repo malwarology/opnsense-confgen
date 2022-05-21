@@ -1,0 +1,16 @@
+<wan>
+      <enable>1</enable>
+      <if>vtnet0</if>
+      <ipaddr>192.0.2.10</ipaddr>
+      <ipaddrv6 />
+      <subnet>24</subnet>
+      <gateway>WAN_GW</gateway>
+      <blockpriv>on</blockpriv>
+      <blockbogons>on</blockbogons>
+      <media />
+      <mediaopt />
+      <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
+      <subnetv6 />
+      <gatewayv6 />
+    </wan>
+    

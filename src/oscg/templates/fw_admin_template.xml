@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<rule>
+  <type>pass</type>
+  <interface>opt0</interface>
+  <ipprotocol>inet</ipprotocol>
+  <statetype>keep state</statetype>
+  <direction>in</direction>
+  <quick>1</quick>
+  <protocol>tcp</protocol>
+  <source>
+    <network>opt0</network>
+  </source>
+  <destination>
+    <network>opt0ip</network>
+    <port>443</port>
+  </destination>
+</rule>

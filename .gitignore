@@ -1,0 +1,56 @@
+## Python Section
+#################
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+
+# Virtual Environments
+venv/
+
+# Testing
+test.py
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Coverage
+.coverage
+
+## macOS Section
+################
+# Hidden OS files
+.DS_Store
+
+## WireGuard Section
+# Keys
+privatekey
+publickey
+
+## Local Section
+################
+# INI files
+*.ini
+
+# WireGuard configuration
+*.conf
+
+# Configuration XML
+config.xml
+config.iso

@@ -1,0 +1,54 @@
+<system>
+    <optimization>normal</optimization>
+    <hostname>OPNsense</hostname>
+    <domain>localdomain</domain>
+    <group>
+      <name>admins</name>
+      <description>System Administrators</description>
+      <scope>system</scope>
+      <gid>1999</gid>
+      <member>0</member>
+      <priv>page-all</priv>
+    </group>
+    <user>
+      <name>root</name>
+      <descr>System Administrator</descr>
+      <scope>system</scope>
+      <groupname>admins</groupname>
+      <password>$2y$10$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
+      <uid>0</uid>
+    </user>
+    <nextuid>2000</nextuid>
+    <nextgid>2000</nextgid>
+    <timezone>Etc/UTC</timezone>
+    <timeservers>0.opnsense.pool.ntp.org 1.opnsense.pool.ntp.org 2.opnsense.pool.ntp.org 3.opnsense.pool.ntp.org</timeservers>
+    <webgui>
+      <protocol>https</protocol>
+    </webgui>
+    <disablenatreflection>yes</disablenatreflection>
+    <usevirtualterminal>1</usevirtualterminal>
+    <disableconsolemenu />
+    <disablevlanhwfilter>1</disablevlanhwfilter>
+    <disablechecksumoffloading>1</disablechecksumoffloading>
+    <disablesegmentationoffloading>1</disablesegmentationoffloading>
+    <disablelargereceiveoffloading>1</disablelargereceiveoffloading>
+    <ipv6allow />
+    <powerd_ac_mode>hadp</powerd_ac_mode>
+    <powerd_battery_mode>hadp</powerd_battery_mode>
+    <powerd_normal_mode>hadp</powerd_normal_mode>
+    <bogons>
+      <interval>monthly</interval>
+    </bogons>
+    <pf_share_forward>1</pf_share_forward>
+    <lb_use_sticky>1</lb_use_sticky>
+    <ssh>
+      <group>admins</group>
+    </ssh>
+    <firmware version="1.0.0">
+      <mirror />
+      <flavour />
+    </firmware>
+    <dnsserver>198.51.100.100</dnsserver>
+    <language>en_US</language>
+  </system>
+  

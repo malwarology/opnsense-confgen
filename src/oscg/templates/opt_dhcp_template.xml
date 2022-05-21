@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<opt_dhcp>
+  <enable>1</enable>
+  <gateway></gateway>
+  <ddnsdomainalgorithm>hmac-md5</ddnsdomainalgorithm>
+  <numberoptions>
+    <item />
+  </numberoptions>
+  <range>
+    <from></from>
+    <to></to>
+  </range>
+  <winsserver />
+  <dnsserver></dnsserver>
+  <ntpserver />
+</opt_dhcp>

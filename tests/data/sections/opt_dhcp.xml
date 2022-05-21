@@ -1,0 +1,32 @@
+<dhcpd>
+    <lan>
+      <enable>1</enable>
+      <gateway />
+      <ddnsdomainalgorithm>hmac-md5</ddnsdomainalgorithm>
+      <numberoptions>
+        <item />
+      </numberoptions>
+      <range>
+        <from />
+        <to />
+      </range>
+      <winsserver />
+      <dnsserver />
+      <ntpserver />
+    </lan>
+  <opt1>
+  <enable>1</enable>
+  <gateway>172.17.0.1</gateway>
+  <ddnsdomainalgorithm>hmac-md5</ddnsdomainalgorithm>
+  <numberoptions>
+    <item />
+  </numberoptions>
+  <range>
+    <from>172.17.0.10</from>
+    <to>172.17.0.250</to>
+  </range>
+  <winsserver />
+  <dnsserver>172.17.0.1</dnsserver>
+  <ntpserver />
+</opt1></dhcpd>
+  

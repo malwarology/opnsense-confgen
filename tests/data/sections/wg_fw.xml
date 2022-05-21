@@ -1,0 +1,57 @@
+<filter>
+    <rule>
+  <type>pass</type>
+  <interface>wan</interface>
+  <ipprotocol>inet</ipprotocol>
+  <statetype>keep state</statetype>
+  <direction>in</direction>
+  <quick>1</quick>
+  <protocol>udp</protocol>
+  <source>
+    <any>1</any>
+  </source>
+  <destination>
+    <network>wanip</network>
+    <port>51821</port>
+  </destination>
+</rule><rule>
+      <type>pass</type>
+      <ipprotocol>inet</ipprotocol>
+      <descr>Default allow LAN to any rule</descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any />
+      </destination>
+    </rule>
+    <rule>
+      <type>pass</type>
+      <ipprotocol>inet6</ipprotocol>
+      <descr>Default allow LAN IPv6 to any rule</descr>
+      <interface>lan</interface>
+      <source>
+        <network>lan</network>
+      </source>
+      <destination>
+        <any />
+      </destination>
+    </rule>
+  <rule>
+  <type>pass</type>
+  <interface>opt0</interface>
+  <ipprotocol>inet</ipprotocol>
+  <statetype>keep state</statetype>
+  <direction>in</direction>
+  <quick>1</quick>
+  <protocol>tcp</protocol>
+  <source>
+    <network>opt0</network>
+  </source>
+  <destination>
+    <network>opt0ip</network>
+    <port>443</port>
+  </destination>
+</rule></filter>
+  

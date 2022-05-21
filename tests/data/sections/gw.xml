@@ -1,0 +1,13 @@
+<gateway_item>
+      <descr>Interface WAN Gateway</descr>
+      <defaultgw>1</defaultgw>
+      <ipprotocol>inet</ipprotocol>
+      <interface>wan</interface>
+      <gateway>192.0.2.1</gateway>
+      <monitor_disable>1</monitor_disable>
+      <name>WAN_GW</name>
+      <interval>1</interval>
+      <weight>1</weight>
+      <fargw>0</fargw>
+    </gateway_item>
+  

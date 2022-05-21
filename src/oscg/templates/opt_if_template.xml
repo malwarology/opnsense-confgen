@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<opt_if>
+    <if></if>
+    <descr></descr>
+    <enable>1</enable>
+    <spoofmac />
+    <ipaddr></ipaddr>
+    <subnet></subnet>
+</opt_if>

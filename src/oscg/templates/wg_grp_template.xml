@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<wireguard>
+  <internal_dynamic>1</internal_dynamic>
+  <enable>1</enable>
+  <if>wireguard</if>
+  <descr>WireGuard (Group)</descr>
+  <type>group</type>
+  <virtual>1</virtual>
+</wireguard>

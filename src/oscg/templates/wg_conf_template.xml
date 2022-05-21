@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<OPNsense>
+  <wireguard>
+    <general version="0.0.1">
+      <enabled>1</enabled>
+    </general>
+    <server version="0.0.3">
+      <servers>
+        <server>
+          <enabled>1</enabled>
+          <name>WGBootstrap</name>
+          <instance>1</instance>
+          <pubkey></pubkey>
+          <privkey></privkey>
+          <port></port>
+          <mtu/>
+          <dns/>
+          <tunneladdress></tunneladdress>
+          <disableroutes>0</disableroutes>
+          <gateway/>
+          <peers></peers>
+        </server>
+      </servers>
+    </server>
+    <client version="0.0.6">
+      <clients>
+        <client>
+          <enabled>1</enabled>
+          <name>WGBootstrap</name>
+          <pubkey></pubkey>
+          <psk/>
+          <tunneladdress></tunneladdress>
+          <serveraddress/>
+          <serverport/>
+          <keepalive/>
+        </client>
+      </clients>
+    </client>
+  </wireguard>
+</OPNsense>

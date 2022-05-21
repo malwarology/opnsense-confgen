@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<opt0>
+  <if>wg1</if>
+  <descr>WGB</descr>
+  <enable>1</enable>
+  <lock>1</lock>
+  <spoofmac/>
+</opt0>

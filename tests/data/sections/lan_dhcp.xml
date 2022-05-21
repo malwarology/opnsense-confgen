@@ -1,0 +1,16 @@
+<lan>
+      <enable>1</enable>
+      <gateway>172.16.0.1</gateway>
+      <ddnsdomainalgorithm>hmac-md5</ddnsdomainalgorithm>
+      <numberoptions>
+        <item />
+      </numberoptions>
+      <range>
+        <from>172.16.0.10</from>
+        <to>172.16.0.250</to>
+      </range>
+      <winsserver />
+      <dnsserver>172.16.0.1</dnsserver>
+      <ntpserver />
+    </lan>
+  
