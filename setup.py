@@ -5,9 +5,7 @@
 # https://opensource.org/licenses/MIT.
 """A setuptools based setup module.
 
-See:
-https://packaging.python.org/guides/distributing-packages-using-setuptools/
-https://github.com/pypa/sampleproject
+For pyproject.toml to be an acceptable alternative, toml must be in the Python Standard Library.
 """
 import setuptools
 
