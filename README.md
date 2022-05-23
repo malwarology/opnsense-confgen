@@ -28,7 +28,7 @@ The WireGuard bootstrap has a number of options. If the INI contains a server pr
 
 ## ISO Image
 
-An alterative output format is an ISO image that contains the `config.xml` file in a directory named `conf` as expected by the OPNsense importer. With OPNsense version 22.1.7, the importer is able to detect ISO9660 and grab the config. This mode of delivery can be used in a virtualization environment such as Proxmox which has shared ISO storage. One ISO can be used simultaneously in multiple OPNsense deployments.
+An alterative output format is an ISO image that contains the `config.xml` file in a directory named `conf` as expected by the OPNsense Importer. With OPNsense version 22.1.7, the importer is able to detect ISO9660 and grab the config. This mode of delivery can be used in a virtualization environment such as Proxmox which has shared ISO storage. One ISO can be used simultaneously in multiple OPNsense deployments.
 
 ## Installation
 
