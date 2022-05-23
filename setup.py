@@ -12,8 +12,6 @@ https://github.com/pypa/sampleproject
 import setuptools
 
 setuptools.setup(
-    package_dir={'': 'src'},
-    packages=setuptools.find_packages(where='src'),
     package_data={'oscg': ['templates/*.xml']},
     python_requires='>=3.10',
     entry_points={
