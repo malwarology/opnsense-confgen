@@ -12,7 +12,6 @@ https://github.com/pypa/sampleproject
 import setuptools
 
 setuptools.setup(
-    python_requires='>=3.10',
     entry_points={
         'console_scripts': [
             'oscg=oscg.cli:main',
