@@ -24,7 +24,7 @@ class TestExample(unittest.TestCase):
 
     def test_dict_equal(self):
         """Test that the configutation object returned matches the expected."""
-        reference_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_example.txt')
+        reference_path = THIS_DIR.joinpath('data').joinpath('ini_example.txt')
         reference_config = configparser.ConfigParser()
         reference_config.read(reference_path)
 
@@ -34,7 +34,7 @@ class TestExample(unittest.TestCase):
 
     def test_files_equal(self):
         """Test that the configutation file written by the ConfigParser object match the expected."""
-        reference_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_example.txt')
+        reference_path = THIS_DIR.joinpath('data').joinpath('ini_example.txt')
         reference_data = reference_path.read_text()
 
         self.oscg_config = oscg.example.generate()

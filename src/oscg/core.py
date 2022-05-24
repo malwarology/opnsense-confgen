@@ -20,7 +20,7 @@ class GenerateConfigs:
     """Class for generating an OPNsense config and optionally a WireGuard client config."""
 
     def __init__(self, config, testing=False):
-        with importlib.resources.open_text('oscg.templates', 'config_template.xml') as config_template:
+        with importlib.resources.open_text('oscg.templates', 'config.xml') as config_template:
             tree = xml.etree.ElementTree.parse(config_template)
         self._root = tree.getroot()
         if isinstance(config, dict):
@@ -135,31 +135,31 @@ class GenerateConfigs:
     def _add_wg_if(self):
         """Append WireGuard interfaces to configuration."""
         # Append WireGuard interface group.
-        wg_grp_template = importlib.resources.read_text('oscg.templates', 'wg_grp_template.xml')
+        wg_grp_template = importlib.resources.read_text('oscg.templates', 'wg_grp.xml')
         wg_grp = xml.etree.ElementTree.fromstring(wg_grp_template)
         self._root.find('interfaces').append(wg_grp)
 
         # Append wg1 interface.
-        wg_if_template = importlib.resources.read_text('oscg.templates', 'wg_if_template.xml')
+        wg_if_template = importlib.resources.read_text('oscg.templates', 'wg_if.xml')
         wg_if = xml.etree.ElementTree.fromstring(wg_if_template)
         self._root.find('interfaces').append(wg_if)
 
     def _add_wg_fw(self):
         """Add firewall rules relating to WireGuard."""
         # Insert firewall rule to allow WireGuard traffic on WAN interface at top of rule set.
-        fw_wg_template = importlib.resources.read_text('oscg.templates', 'fw_wg_template.xml')
+        fw_wg_template = importlib.resources.read_text('oscg.templates', 'fw_wg.xml')
         fw_wg = xml.etree.ElementTree.fromstring(fw_wg_template)
         fw_wg.find('destination').find('port').text = self._ini_config['WGB']['port']
         self._root.find('filter').insert(0, fw_wg)
 
         # Append firewall rule allowing access to OPNsense admin portal from WireGuard interface.
-        fw_admin_template = importlib.resources.read_text('oscg.templates', 'fw_admin_template.xml')
+        fw_admin_template = importlib.resources.read_text('oscg.templates', 'fw_admin.xml')
         fw_admin = xml.etree.ElementTree.fromstring(fw_admin_template)
         self._root.find('filter').append(fw_admin)
 
     def _add_wg_settings(self):
         """Append WireGuard settings to configuration."""
-        wg_conf_template = importlib.resources.read_text('oscg.templates', 'wg_conf_template.xml')
+        wg_conf_template = importlib.resources.read_text('oscg.templates', 'wg_conf.xml')
         wg_conf = xml.etree.ElementTree.fromstring(wg_conf_template)
         wgc = wg_conf.find('wireguard')
 
@@ -195,7 +195,7 @@ class GenerateConfigs:
         """Append optional interface settings to configuration."""
         section = match.group(0)
 
-        opt_if_template = importlib.resources.read_text('oscg.templates', 'opt_if_template.xml')
+        opt_if_template = importlib.resources.read_text('oscg.templates', 'opt_if.xml')
         opt_if = xml.etree.ElementTree.fromstring(opt_if_template)
 
         opt_if.tag = 'opt{}'.format(match.group('number'))
@@ -210,7 +210,7 @@ class GenerateConfigs:
         """Append optional interface DHCP settings to configuration."""
         section = match.group(0)
 
-        opt_dhcp_template = importlib.resources.read_text('oscg.templates', 'opt_dhcp_template.xml')
+        opt_dhcp_template = importlib.resources.read_text('oscg.templates', 'opt_dhcp.xml')
         opt_dhcp = xml.etree.ElementTree.fromstring(opt_dhcp_template)
 
         opt_dhcp.tag = 'opt{}'.format(match.group('number'))

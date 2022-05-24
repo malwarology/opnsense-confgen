@@ -124,7 +124,7 @@ class TestWriteExample(unittest.TestCase):
 
     def test_example_content(self):
         """Test the file content is as expected."""
-        example_ref = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_example.txt').read_text()
+        example_ref = THIS_DIR.joinpath('data').joinpath('ini_example.txt').read_text()
 
         with contextlib.redirect_stdout(io.StringIO()):
             with contextlib.suppress(SystemExit):
@@ -213,21 +213,21 @@ class TestGenConfigs(unittest.TestCase):
 
     def test_os_config_obj_with_wg(self):
         """Test that the returned OPNsense configuration object is the correct type with WireGuard."""
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         os_config, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(os_config, str, 'Returned object is not a string with WireGuard.')
 
     def test_os_config_obj_without_wg(self):
         """Test that the returned OPNsense configuration object is the correct type without WireGuard."""
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_full.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
         os_config, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(os_config, str, 'Returned object is not a string without WireGuard.')
 
     def test_wg_config_obj_with_wg(self):
         """Test that the returned WireGuard configuration object is the correct type with WireGuard."""
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         _, wg_config = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(wg_config, configparser.RawConfigParser,
@@ -235,7 +235,7 @@ class TestGenConfigs(unittest.TestCase):
 
     def test_wg_config_obj_without_wg(self):
         """Test that the returned WireGuard configuration object is the correct type without WireGuard."""
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_full.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
         _, wg_config = oscg.cli._generate_configs(ini_path)
 
         self.assertIsNone(wg_config, 'None type not returned when expected.')
@@ -243,7 +243,7 @@ class TestGenConfigs(unittest.TestCase):
     def test_debug_output_with_wg(self):
         """Test that the debug output text is correct with WireGuard."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub.re').read_text().strip()
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
 
         with contextlib.redirect_stdout(io.StringIO()) as f:
             oscg.cli._generate_configs(ini_path, debug=True)
@@ -254,7 +254,7 @@ class TestGenConfigs(unittest.TestCase):
     def test_debug_output_without_wg(self):
         """Test that the debug output text is correct without WireGuard."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_stat_keys.re').read_text().strip()
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_full.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
 
         with contextlib.redirect_stdout(io.StringIO()) as f:
             oscg.cli._generate_configs(ini_path, debug=True)
@@ -270,7 +270,7 @@ class TestWriteXML(unittest.TestCase):
         """Prepare temporary directory."""
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         self.config, _ = oscg.cli._generate_configs(ini_path)
 
     def test_xml_write(self):
@@ -336,7 +336,7 @@ class TestWriteWireGuard(unittest.TestCase):
         """Prepare temporary directory."""
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         _, self.config = oscg.cli._generate_configs(ini_path)
 
     def test_wg_write(self):
@@ -402,7 +402,7 @@ class TestWriteISO(unittest.TestCase):
         """Prepare temporary directory."""
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
-        ini_path = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         self.config, _ = oscg.cli._generate_configs(ini_path)
 
     def test_iso_write(self):
@@ -507,7 +507,7 @@ class TestMainArguments(unittest.TestCase):
     @unittest.mock.patch('argparse._sys.argv', ['oscg', '-e'])
     def test_arg_example(self):
         """Test the example file content is as expected."""
-        example_ref = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_example.txt').read_text()
+        example_ref = THIS_DIR.joinpath('data').joinpath('ini_example.txt').read_text()
 
         with contextlib.redirect_stdout(io.StringIO()):
             with contextlib.suppress(SystemExit):
@@ -521,7 +521,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_debug(self):
         """Test that the debug output text is correct."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub.re').read_text().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
 
@@ -535,7 +535,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_xml(self):
         """Test that the XML configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub_with_decl.re').read_text().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.XML.value
@@ -550,7 +550,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_xml_no_keys(self):
         """Test that the XML configuration file content is created correctly when no keys are provided."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_keys_with_decl.re').read_text().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_keys.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_keys.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.XML.value
@@ -565,7 +565,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_xml_no_spriv(self):
         """Test that the XML configuration file content is created correctly when no server private key is provided."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_spriv_with_decl.re').read_text().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_spriv.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_spriv.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.XML.value
@@ -580,7 +580,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_iso(self):
         """Test that the ISO configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub_with_decl.re').read_bytes().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.ISO.value
@@ -595,7 +595,7 @@ class TestMainArguments(unittest.TestCase):
     def test_arg_both(self):
         """Test that the ISO configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub_with_decl.re').read_bytes().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         xml_path = oscg.cli._Output.XML
@@ -614,7 +614,7 @@ class TestMainArguments(unittest.TestCase):
     def test_wg(self):
         """Test that the WireGuard client configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('wg_client_config_fqdn.re').read_text().strip()
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_no_cpub.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.WG.value
@@ -627,7 +627,7 @@ class TestMainArguments(unittest.TestCase):
     @unittest.mock.patch('argparse._sys.argv', ['oscg'])
     def test_no_wg(self):
         """Test that the WireGuard client configuration file content is not created."""
-        src = THIS_DIR.joinpath('data').joinpath('ini_opnsense_config_full.txt')
+        src = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
         output_path = oscg.cli._Output.WG.value
