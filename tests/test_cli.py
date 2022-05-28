@@ -4,7 +4,6 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT.
 """Unit test for command line module."""
-import configparser
 import contextlib
 import io
 import os
@@ -230,8 +229,7 @@ class TestGenConfigs(unittest.TestCase):
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         _, wg_config = oscg.cli._generate_configs(ini_path)
 
-        self.assertIsInstance(wg_config, configparser.RawConfigParser,
-                              'ConfigParser object not returned when expected.')
+        self.assertIsInstance(wg_config, str, 'String not returned when expected.')
 
     def test_wg_config_obj_without_wg(self):
         """Test that the returned WireGuard configuration object is the correct type without WireGuard."""

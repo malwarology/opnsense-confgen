@@ -109,8 +109,7 @@ def _write_wg(wg_config):
     conf_path = _Output.WG.value
     if not _check_path(conf_path):
         return
-    with open(conf_path, 'w') as configfile:
-        wg_config.write(configfile)
+    conf_path.write_text(wg_config)
     print(f'WireGuard client configuration written to: {conf_path}')
 
 

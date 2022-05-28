@@ -11,7 +11,6 @@ import copy
 import io
 import pathlib
 import re
-import tempfile
 import unittest
 import xml.etree.ElementTree
 
@@ -256,11 +255,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
         gcl._set_system()
         gcl._check_serverkey()
         gcl._gen_wg_config()
-
-        with tempfile.NamedTemporaryFile(mode='r+') as f:
-            with open(f.name, 'w') as configfile:
-                gcl.wg_config.write(configfile)
-            wg_conf_str = f.read()
+        wg_conf_str = gcl.wg_config
 
         self.assertRegex(wg_conf_str, wg_conf_re, 'WireGuard configuration is not as expected.')
 
@@ -276,11 +271,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
         gcl._set_system()
         gcl._check_serverkey()
         gcl._gen_wg_config()
-
-        with tempfile.NamedTemporaryFile(mode='r+') as f:
-            with open(f.name, 'w') as configfile:
-                gcl.wg_config.write(configfile)
-            wg_conf_str = f.read()
+        wg_conf_str = gcl.wg_config
 
         self.assertRegex(wg_conf_str, wg_conf_re, 'WireGuard config not as expected, hostname/domain not provided.')
 
@@ -398,6 +389,25 @@ class TestGeneratorClassFunct(unittest.TestCase):
         section = xml.etree.ElementTree.tostring(self.gc._root, encoding='unicode')
 
         self.assertRegex(section, config_re, 'Full OPNsense configuration not formatted correctly.')
+
+    def test_os_config_type(self):
+        """Test that the type returned by the os_config property is a string."""
+        self.gc._gen_os_config()
+        os_config = self.gc.os_config
+
+        self.assertIsInstance(os_config, str, 'OPNsense configuration is not the expected string type.')
+
+    def test_wg_config_type(self):
+        """Test that the type returned by the wg_config property is a string."""
+        config_local = copy.deepcopy(config_dict)
+        del config_local['WGB']['client_pubkey']
+        gcl = oscg.core.GenerateConfigs(config_local, testing=True)
+        gcl._set_system()
+        gcl._check_serverkey()
+        gcl._gen_wg_config()
+        wg_config = gcl.wg_config
+
+        self.assertIsInstance(wg_config, str, 'WireGuard client configuration is not the expected string type.')
 
     def test_os_config_debug_dump(self):
         """Test that configuration generation function works as expected using debug dump no testing mode."""
