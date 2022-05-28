@@ -66,7 +66,7 @@ oscg -c
 
 ### Example Code
 
-The following example will read a file `opnsense_config.ini` and instantiate the class with it. The OPNsense configuration result is an XML text string and the WireGuard result is a ConfigParser object. The config input used to instantiate the class can be a ConfigParser instance or it can be a dictionary object with the same section and field structure as what would result from reading the INI.
+The following example will read a file `opnsense_config.ini` and instantiate the class with it. The OPNsense configuration result is an XML text string and the WireGuard result is a ConfigParser generated string. The config input used to instantiate the class can be a ConfigParser instance or it can be a dictionary object with the same section and field structure as what would result from reading the INI.
 
 ```
 import configparser
@@ -84,8 +84,7 @@ config_path = pathlib.Path('config.xml')
 config_path.write_text(opnsense_config)
 
 wg_path = pathlib.Path('WGBootstrap.conf')
-with open(wg_path, 'w') as configfile:
-    wg_config.write(configfile)
+wg_path.write_text(wireguard_config)
 ```
 
 ### Example INI
