@@ -7,6 +7,7 @@
 import configparser
 import importlib.metadata
 import importlib.resources
+import io
 import ipaddress
 import re
 import time
@@ -32,7 +33,7 @@ class GenerateConfigs:
         self._hostname = None
         self._domain = None
 
-        self.wg_config = None
+        self._wg_configparser = None
 
         if not testing:
             self._gen_os_config()
@@ -107,14 +108,14 @@ class GenerateConfigs:
 
     def _gen_wg_config(self):
         """Generate WireGuard key and client config."""
-        self.wg_config = configparser.RawConfigParser()
-        self.wg_config.optionxform = lambda option: option
+        self._wg_configparser = configparser.RawConfigParser()
+        self._wg_configparser.optionxform = lambda option: option
 
         private, public = oscg.utils._wgkeys()
         self._ini_config['WGB']['client_pubkey'] = public
 
-        self.wg_config['Interface'] = {'PrivateKey': private,
-                                       'Address': self._ini_config['WGB']['client_ip']}
+        self._wg_configparser['Interface'] = {'PrivateKey': private,
+                                              'Address': self._ini_config['WGB']['client_ip']}
 
         if self._hostname and self._domain:
             host = f'{self._hostname}.{self._domain}'
@@ -122,9 +123,9 @@ class GenerateConfigs:
             host = self._ini_config['WAN']['ip']
         endpoint = '{}:{}'.format(host, self._ini_config['WGB']['port'])
 
-        self.wg_config['Peer'] = {'PublicKey': self._ini_config['WGB']['server_pubkey'],
-                                  'AllowedIPs': self._ini_config['WGB']['server_ip'],
-                                  'Endpoint': endpoint}
+        self._wg_configparser['Peer'] = {'PublicKey': self._ini_config['WGB']['server_pubkey'],
+                                         'AllowedIPs': self._ini_config['WGB']['server_ip'],
+                                         'Endpoint': endpoint}
 
     def _add_wg_plugin(self):
         """Add WireGuard plugin to configuration."""
@@ -254,6 +255,19 @@ class GenerateConfigs:
         config_xml = xml.etree.ElementTree.tostring(self._root, xml_declaration=True)
 
         return config_xml.decode()
+
+    @property
+    def wg_config(self):
+        """Property which returns the finished WireGuard client config string."""
+        if self._wg_configparser is not None:
+            with io.StringIO() as configfile:
+                self._wg_configparser.write(configfile)
+                configfile.seek(0)
+                config_str = configfile.read()
+
+            return config_str
+
+        return self._wg_configparser
 
     def debug(self):
         """Dump config XML to stdout."""
