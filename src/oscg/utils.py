@@ -5,8 +5,10 @@
 # https://opensource.org/licenses/MIT.
 """Module for utility functions."""
 import base64
+import io
 
 import nacl.public
+import pycdlib
 
 
 def _wggetpub(private):
@@ -27,3 +29,18 @@ def _wgkeys():
     pubkey = _wggetpub(private)
 
     return privkey, pubkey
+
+
+def make_iso(config):
+    """Create an ISO image with the configuration file in it."""
+    iso = pycdlib.PyCdlib()
+    iso.new()
+    iso.add_directory('/CONF')
+    iso.add_fp(io.BytesIO(config.encode()), len(config), '/CONF/CONFIG.XML;1')
+    with io.BytesIO() as iso_data:
+        iso.write_fp(iso_data)
+        iso_data.seek(0)
+        output = iso_data.read()
+    iso.close()
+
+    return output

@@ -5,6 +5,7 @@
 # https://opensource.org/licenses/MIT.
 """Unit test config generator utils module."""
 import base64
+import struct
 import unittest
 
 import nacl.public
@@ -57,6 +58,31 @@ class TestPublicKeyRecovery(unittest.TestCase):
         pubkey = oscg.utils._wggetpub(private)
 
         self.assertEqual(pubkey, public, 'Public key recovered does not match expected.')
+
+
+class TestMakeISO(unittest.TestCase):
+    """Check that the output is an ISO."""
+
+    def test_output_type(self):
+        """Test that the output of the function is bytes."""
+        iso = oscg.utils.make_iso('DUMMYDATA')
+
+        self.assertIsInstance(iso, bytes, 'Return value not bytes as expected.')
+
+    def test_output_content(self):
+        """Test that the output contains the input string."""
+        input_string = 'DUMMYDATA'
+        iso = oscg.utils.make_iso(input_string)
+
+        self.assertRegex(iso, input_string.encode(), 'Output does not contain input string.')
+
+    def test_output_magic(self):
+        """Test that the output has the correct ISO9660 volume descriptor magic number."""
+        iso9660 = (1, b'CD001', 1)  # https://en.wikipedia.org/wiki/ISO_9660#Volume_descriptor_set
+        iso = oscg.utils.make_iso('DUMMYDATA')
+        magic = struct.unpack_from('B5sBx', buffer=iso, offset=0x8000)
+
+        self.assertTupleEqual(magic, iso9660, 'Output volume descriptor magic number is incorrect.')
 
 
 if __name__ == '__main__':
