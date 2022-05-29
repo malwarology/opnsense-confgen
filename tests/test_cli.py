@@ -465,16 +465,6 @@ class TestWriteISO(unittest.TestCase):
 
         self.assertEqual(file_data, dummy_data, 'ISO configuration overwritten.')
 
-    @unittest.mock.patch.dict('sys.modules', {'pycdlib': None})
-    def test_no_pycdlib(self):
-        """Test pycdlib not imported."""
-        message = 'Package "pycdlib"" is not installed\n'
-        with contextlib.redirect_stdout(io.StringIO()) as f:
-            oscg.cli._write_iso(self.config)
-        stdout = f.getvalue()
-
-        self.assertEqual(stdout, message, 'Console message not as expected with pycdlib not imported.')
-
     def tearDown(self):
         """Cleanup the temporary directory."""
         self.td.cleanup()

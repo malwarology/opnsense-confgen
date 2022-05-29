@@ -13,19 +13,14 @@ if needed. The config.xml output can optionally be exported as an ISO.
 """
 import argparse
 import configparser
-import contextlib
 import distutils
 import enum
-import importlib.util
-import io
 import pathlib
 import sys
 
-with contextlib.suppress(ImportError):
-    import pycdlib
-
 import oscg.core
 import oscg.example
+import oscg.utils
 
 
 class _Output(enum.Enum):
@@ -115,19 +110,11 @@ def _write_wg(wg_config):
 
 def _write_iso(os_config):
     """Write OPNsense configuration to ISO image."""
-    spec = importlib.util.find_spec('pycdlib')
-    if spec is None:
-        print('Package "pycdlib"" is not installed')
-        return
     conf_path = _Output.ISO.value
     if not _check_path(conf_path):
         return
-    iso = pycdlib.PyCdlib()
-    iso.new()
-    iso.add_directory('/CONF')
-    iso.add_fp(io.BytesIO(os_config.encode()), len(os_config), '/CONF/CONFIG.XML;1')
-    iso.write(conf_path)
-    iso.close()
+    iso = oscg.utils.make_iso(os_config)
+    conf_path.write_bytes(iso)
     print(f'OPNsense configuration written to: {conf_path}')
 
 
