@@ -71,12 +71,12 @@ The following example will read a file `opnsense_config.ini` and instantiate the
 ```
 import configparser
 import pathlib
-import oscg
+import oscg.core
 
 ini_config = configparser.ConfigParser()
 ini_config.read('opnsense_config.ini')
 
-gc = oscg.core.GenerateConfigs(config)
+gc = oscg.core.GenerateConfigs(ini_config)
 opnsense_config = gc.os_config
 wireguard_config = gc.wg_config
 
