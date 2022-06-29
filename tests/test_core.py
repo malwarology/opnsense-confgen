@@ -275,6 +275,13 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         self.assertRegex(wg_conf_str, wg_conf_re, 'WireGuard config not as expected, hostname/domain not provided.')
 
+    def test_console_url(self):
+        """Test that the console URL is set properly."""
+        self.gc._set_wg_console_url()
+        console_url = self.gc.console_url
+
+        self.assertEqual(console_url, 'https://172.19.0.1/', 'Console URL not set properly.')
+
     def test_plugin(self):
         """Test that the plugin is added properly to the system configuration."""
         section_str = THIS_DIR.joinpath('data').joinpath('sections').joinpath('plugin.xml').read_text()

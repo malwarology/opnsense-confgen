@@ -35,6 +35,8 @@ class GenerateConfigs:
 
         self._wg_configparser = None
 
+        self.console_url = None
+
         if not testing:
             self._gen_os_config()
 
@@ -126,6 +128,13 @@ class GenerateConfigs:
         self._wg_configparser['Peer'] = {'PublicKey': self._ini_config['WGB']['server_pubkey'],
                                          'AllowedIPs': self._ini_config['WGB']['server_ip'],
                                          'Endpoint': endpoint}
+
+    def _set_wg_console_url(self):
+        """Extract WireGuard server IP and set URL as attribute."""
+        server_cidr = self._ini_config['WGB']['server_ip']
+        server_ip = server_cidr.split('/')[0]
+
+        self.console_url = f'https://{server_ip}/'
 
     def _add_wg_plugin(self):
         """Add WireGuard plugin to configuration."""
@@ -236,6 +245,7 @@ class GenerateConfigs:
             self._check_serverkey()
             if not self._ini_config['WGB'].get('client_pubkey'):
                 self._gen_wg_config()
+            self._set_wg_console_url()
             self._add_wg_plugin()
             self._add_wg_if()
             self._add_wg_fw()
