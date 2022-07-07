@@ -277,7 +277,7 @@ class GenerateConfigs:
 
             return config_str
 
-        return self._wg_configparser
+        return None
 
     @property
     def mac_shortcut(self):
