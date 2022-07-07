@@ -259,6 +259,21 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         self.assertRegex(wg_conf_str, wg_conf_re, 'WireGuard configuration is not as expected.')
 
+    def test_wg_client_config_server_dynamic(self):
+        """Test WireGuard client config is generated properly when server key is generated."""
+        wg_conf_re = THIS_DIR.joinpath('data').joinpath('wg_client_config_fqdn_server_dynamic.re').read_text()
+
+        config_local = copy.deepcopy(config_dict)
+        del config_local['WGB']['server_privkey']
+        del config_local['WGB']['client_pubkey']
+        gcl = oscg.core.GenerateConfigs(config_local, testing=True)
+        gcl._set_system()
+        gcl._check_serverkey()
+        gcl._gen_wg_config()
+        wg_conf_str = gcl.wg_config
+
+        self.assertRegex(wg_conf_str, wg_conf_re, 'WireGuard configuration is not as expected with dynamic server key.')
+
     def test_wg_client_config_no_hostname_no_domain(self):
         """Test WireGuard client config is generated properly when hostname and domain are not provided."""
         wg_conf_re = THIS_DIR.joinpath('data').joinpath('wg_client_config_ip.re').read_text()
