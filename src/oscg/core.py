@@ -279,6 +279,14 @@ class GenerateConfigs:
 
         return self._wg_configparser
 
+    @property
+    def mac_shortcut(self):
+        """Property which returns the finished console URL macOS internet shortcut string."""
+        if self.console_url is not None:
+            return '[InternetShortcut]\nURL={}\n'.format(self.console_url)
+        else:
+            return None
+
     def debug(self):
         """Dump config XML to stdout."""
         xml.etree.ElementTree.dump(self._root)

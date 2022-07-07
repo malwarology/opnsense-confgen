@@ -213,28 +213,28 @@ class TestGenConfigs(unittest.TestCase):
     def test_os_config_obj_with_wg(self):
         """Test that the returned OPNsense configuration object is the correct type with WireGuard."""
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
-        os_config, _ = oscg.cli._generate_configs(ini_path)
+        os_config, _, _, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(os_config, str, 'Returned object is not a string with WireGuard.')
 
     def test_os_config_obj_without_wg(self):
         """Test that the returned OPNsense configuration object is the correct type without WireGuard."""
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
-        os_config, _ = oscg.cli._generate_configs(ini_path)
+        os_config, _, _, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(os_config, str, 'Returned object is not a string without WireGuard.')
 
     def test_wg_config_obj_with_wg(self):
         """Test that the returned WireGuard configuration object is the correct type with WireGuard."""
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
-        _, wg_config = oscg.cli._generate_configs(ini_path)
+        _, wg_config, _, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsInstance(wg_config, str, 'String not returned when expected.')
 
     def test_wg_config_obj_without_wg(self):
         """Test that the returned WireGuard configuration object is the correct type without WireGuard."""
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
-        _, wg_config = oscg.cli._generate_configs(ini_path)
+        _, wg_config, _, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsNone(wg_config, 'None type not returned when expected.')
 
@@ -269,7 +269,7 @@ class TestWriteXML(unittest.TestCase):
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
-        self.config, _ = oscg.cli._generate_configs(ini_path)
+        self.config, _, _, _ = oscg.cli._generate_configs(ini_path)
 
     def test_xml_write(self):
         """Test that the XML configuration file is created correctly."""
@@ -335,7 +335,7 @@ class TestWriteWireGuard(unittest.TestCase):
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
-        _, self.config = oscg.cli._generate_configs(ini_path)
+        _, self.config, _, _ = oscg.cli._generate_configs(ini_path)
 
     def test_wg_write(self):
         """Test that the WireGuard client configuration file is created correctly."""
@@ -401,7 +401,7 @@ class TestWriteISO(unittest.TestCase):
         self.td = tempfile.TemporaryDirectory()
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
-        self.config, _ = oscg.cli._generate_configs(ini_path)
+        self.config, _, _, _ = oscg.cli._generate_configs(ini_path)
 
     def test_iso_write(self):
         """Test that the ISO configuration file is created correctly."""
