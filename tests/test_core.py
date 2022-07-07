@@ -485,6 +485,13 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         self.assertRegex(section, config_re, 'Output not formatted correctly, no WireGuard.')
 
+    def test_wg_config_prop_no_wireguard(self):
+        """Test that the WireGuard config property returns None when config is not generated."""
+        self.gc._gen_os_config()
+        wg_config = self.gc.wg_config
+
+        self.assertIsNone(wg_config, 'WireGuard config property is not None.')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
