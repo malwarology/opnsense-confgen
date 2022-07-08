@@ -509,12 +509,12 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
     def test_mac_shortcut_prop(self):
         """Test that the macOS shortcut property returns the correct data."""
-        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
+        expected = '[InternetShortcut]\nURL=https://172.19.0.1/\n'
 
         self.gc._gen_os_config()
         mac_shortcut = self.gc.mac_shortcut
 
-        self.assertRegex(mac_shortcut, config_re, 'Shortcut for macOS not returned correctly from property.')
+        self.assertEqual(mac_shortcut, expected, 'Shortcut for macOS not returned correctly from property.')
 
     def test_no_mac_shortcut_prop(self):
         """Test that the macOS shortcut property returns None when WireGuard bootstrap is not in config INI."""

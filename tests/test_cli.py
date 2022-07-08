@@ -302,22 +302,21 @@ class TestWriteXML(unittest.TestCase):
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         self.config, _, _, _ = oscg.cli._generate_configs(ini_path)
+        self.output_path = oscg.cli._Output.XML.value
 
     def test_xml_write(self):
         """Test that the XML configuration file is created correctly."""
-        output_path = oscg.cli._Output.XML.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_xml(self.config)
 
-        self.assertTrue(output_path.exists(), 'XML configuration not created.')
+        self.assertTrue(self.output_path.exists(), 'XML configuration not created.')
 
     def test_xml_write_content(self):
         """Test that the XML configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub_with_decl.re').read_text().strip()
-        output_path = oscg.cli._Output.XML.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_xml(self.config)
-        output = output_path.read_text()
+        output = self.output_path.read_text()
 
         self.assertRegex(output, config_re, 'XML config file content incorrect.')
 
@@ -334,11 +333,10 @@ class TestWriteXML(unittest.TestCase):
     def test_xml_overwrite(self, mock_inputs):
         """Test XML configuration file creation when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.XML.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_xml(self.config)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertNotEqual(file_data, dummy_data, 'XML configuration not overwritten.')
 
@@ -346,11 +344,10 @@ class TestWriteXML(unittest.TestCase):
     def test_xml_no_overwrite(self, mock_inputs):
         """Test XML configuration file not overwritten when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.XML.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_xml(self.config)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertEqual(file_data, dummy_data, 'XML configuration overwritten.')
 
@@ -368,14 +365,14 @@ class TestWriteWireGuard(unittest.TestCase):
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         _, self.config, _, _ = oscg.cli._generate_configs(ini_path)
+        self.output_path = oscg.cli._Output.WG.value
 
     def test_wg_write(self):
         """Test that the WireGuard client configuration file is created correctly."""
-        output_path = oscg.cli._Output.WG.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_wg(self.config)
 
-        self.assertTrue(output_path.exists(), 'WireGuard client configuration not created.')
+        self.assertTrue(self.output_path.exists(), 'WireGuard client configuration not created.')
 
     def test_wg_write_stdout(self):
         """Test that the stdout message is correct."""
@@ -389,10 +386,9 @@ class TestWriteWireGuard(unittest.TestCase):
     def test_wg_write_content(self):
         """Test that the WireGuard client configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('wg_client_config_fqdn.re').read_text().strip()
-        output_path = oscg.cli._Output.WG.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_wg(self.config)
-        output = output_path.read_text()
+        output = self.output_path.read_text()
 
         self.assertRegex(output, config_re, 'WireGuard client config file content incorrect.')
 
@@ -400,11 +396,10 @@ class TestWriteWireGuard(unittest.TestCase):
     def test_wg_overwrite(self, mock_inputs):
         """Test WireGuard client configuration file creation when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.WG.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_wg(self.config)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertNotEqual(file_data, dummy_data, 'WireGuard client configuration not overwritten.')
 
@@ -412,11 +407,10 @@ class TestWriteWireGuard(unittest.TestCase):
     def test_wg_no_overwrite(self, mock_inputs):
         """Test WireGuard client configuration file not overwritten when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.WG.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_wg(self.config)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertEqual(file_data, dummy_data, 'WireGuard client configuration overwritten.')
 
@@ -434,32 +428,30 @@ class TestWriteISO(unittest.TestCase):
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         self.config, _, _, _ = oscg.cli._generate_configs(ini_path)
+        self.output_path = oscg.cli._Output.ISO.value
 
     def test_iso_write(self):
         """Test that the ISO configuration file is created correctly."""
-        output_path = oscg.cli._Output.ISO.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_iso(self.config)
 
-        self.assertTrue(output_path.exists(), 'ISO configuration not created.')
+        self.assertTrue(self.output_path.exists(), 'ISO configuration not created.')
 
     def test_iso_write_content(self):
         """Test that the ISO configuration file content is created correctly."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_dyn_cpub_with_decl.re').read_bytes().strip()
-        output_path = oscg.cli._Output.ISO.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_iso(self.config)
-        output = output_path.read_bytes()
+        output = self.output_path.read_bytes()
 
         self.assertRegex(output, config_re, 'ISO config file content incorrect.')
 
     def test_iso_write_magic(self):
         """Test that the ISO configuration file has the correct ISO9660 volume descriptor magic number."""
         iso9660 = (1, b'CD001', 1)  # https://en.wikipedia.org/wiki/ISO_9660#Volume_descriptor_set
-        output_path = oscg.cli._Output.ISO.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_iso(self.config)
-        output = output_path.read_bytes()
+        output = self.output_path.read_bytes()
         magic = struct.unpack_from('B5sBx', buffer=output, offset=0x8000)
 
         self.assertTupleEqual(magic, iso9660, 'ISO config file volume descriptor magic number is incorrect.')
@@ -477,11 +469,10 @@ class TestWriteISO(unittest.TestCase):
     def test_iso_overwrite(self, mock_inputs):
         """Test ISO configuration file creation when file exists already."""
         dummy_data = b'DUMMYDATA'
-        output_path = oscg.cli._Output.ISO.value
-        output_path.write_bytes(dummy_data)
+        self.output_path.write_bytes(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_iso(self.config)
-        file_data = output_path.read_bytes()
+        file_data = self.output_path.read_bytes()
 
         self.assertNotEqual(file_data, dummy_data, 'ISO configuration not overwritten.')
 
@@ -489,11 +480,10 @@ class TestWriteISO(unittest.TestCase):
     def test_iso_no_overwrite(self, mock_inputs):
         """Test ISO configuration file not overwritten when file exists already."""
         dummy_data = b'DUMMYDATA'
-        output_path = oscg.cli._Output.ISO.value
-        output_path.write_bytes(dummy_data)
+        self.output_path.write_bytes(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_iso(self.config)
-        file_data = output_path.read_bytes()
+        file_data = self.output_path.read_bytes()
 
         self.assertEqual(file_data, dummy_data, 'ISO configuration overwritten.')
 
@@ -511,14 +501,14 @@ class TestWriteShortcut(unittest.TestCase):
         os.chdir(self.td.name)
         ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         _, _, self.shortcut, _ = oscg.cli._generate_configs(ini_path)
+        self.output_path = oscg.cli._Output.URL.value
 
     def test_sc_write(self):
         """Test that the macOS shortcut file is created correctly."""
-        output_path = oscg.cli._Output.URL.value
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_mac_shortcut(self.shortcut)
 
-        self.assertTrue(output_path.exists(), 'Shortcut not created.')
+        self.assertTrue(self.output_path.exists(), 'Shortcut not created.')
 
     def test_sc_write_stdout(self):
         """Test that the stdout message is correct."""
@@ -531,23 +521,21 @@ class TestWriteShortcut(unittest.TestCase):
 
     def test_sc_write_content(self):
         """Test that the macOS shortcut file content is created correctly."""
-        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
-        output_path = oscg.cli._Output.URL.value
+        expected = '[InternetShortcut]\nURL=https://172.19.0.1/\n'
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_mac_shortcut(self.shortcut)
-        output = output_path.read_text()
+        output = self.output_path.read_text()
 
-        self.assertRegex(output, config_re, 'Shortcut file content incorrect.')
+        self.assertEqual(output, expected, 'Shortcut file content incorrect.')
 
     @unittest.mock.patch('builtins.input', side_effect=['yes'])
     def test_sc_overwrite(self, mock_inputs):
         """Test macOS shortcut file creation when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.URL.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_mac_shortcut(self.shortcut)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertNotEqual(file_data, dummy_data, 'Shortcut not overwritten.')
 
@@ -555,11 +543,10 @@ class TestWriteShortcut(unittest.TestCase):
     def test_sc_no_overwrite(self, mock_inputs):
         """Test macOS shortcut file not overwritten when file exists already."""
         dummy_data = 'DUMMYDATA'
-        output_path = oscg.cli._Output.URL.value
-        output_path.write_text(dummy_data)
+        self.output_path.write_text(dummy_data)
         with contextlib.redirect_stdout(io.StringIO()):
             oscg.cli._write_mac_shortcut(self.shortcut)
-        file_data = output_path.read_text()
+        file_data = self.output_path.read_text()
 
         self.assertEqual(file_data, dummy_data, 'Shortcut overwritten.')
 
@@ -699,7 +686,7 @@ class TestMainArguments(unittest.TestCase):
     @unittest.mock.patch('argparse._sys.argv', ['oscg', '-s'])
     def test_sc(self):
         """Test that the macOS file content is created correctly."""
-        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
+        expected = '[InternetShortcut]\nURL=https://172.19.0.1/\n'
         src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
         dst = pathlib.Path('opnsense_config.ini')
         shutil.copy(src, dst)
@@ -708,7 +695,7 @@ class TestMainArguments(unittest.TestCase):
             oscg.cli.main()
         output = output_path.read_text()
 
-        self.assertRegex(output, config_re, 'Shortcut file content incorrect.')
+        self.assertEqual(output, expected, 'Shortcut file content incorrect.')
 
     @unittest.mock.patch('argparse._sys.argv', ['oscg', '-u'])
     def test_url(self):
