@@ -2,7 +2,7 @@
 
 This package takes a Python ConfigParser formatted INI file and generates a ready to use config.xml file for OPNsense. The intent is for the file to be used during the installation process by the OPNsense Importer. The end result is a minimal working configuraion with interfaces fully configured. Included in this package are a command line interface and a class which is importable into Python scripts and other applications.
 
-More information about the OPNsense importer can be found here: https://docs.opnsense.org/manual/install.html#opnsense-importer
+More information about the OPNsense importer can be found [here](https://docs.opnsense.org/manual/install.html#opnsense-importer).
 
 There are three potential output files:
 
@@ -11,6 +11,8 @@ There are three potential output files:
 | config.xml | OPNsense configuration XML |
 | config.iso | OPNsense configuration XML in a CD image |
 | WGBootstrap.conf | WireGuard client configuration |
+| WGBootstrap.url | macOS shortcut leading to OPNsense console |
+| opnsense_config_example.ini | Example configuration INI |
 
 ## Optional Interfaces
 
@@ -25,6 +27,8 @@ If an `OPT` section of the INI contains a `dhcp_start` field, then a DHCP config
 An optional feature is the WireGuard bootstrap. If a `WGB` section is provided in the INI, then a working WireGuard VPN interface will be available for immediate connection. The interface occupies instance 1, therefore the device will be `wg1` rather than `wg0`. This is to allow the user or automation to create a permanent WireGuard VPN interface at `wg0` then delete the bootstrap. The goal with this process is to have the permanent WireGaurd private key generated on the OPNsense instance and never to have been transmitted at any time.
 
 The WireGuard bootstrap has a number of options. If the INI contains a server private key, it will be used to derive a public key. That resulting key pair will be used to populate the configuration output. If the server private key is missing from the INI file, a new key pair will be generated using libsodium which will then be used to populate the configuration output. If a WireGuard client public key is present, it will be used to populate the endpoint section of the configuration output. If this public key is missing, a new key pair will be generated and used to populate the configuration output. A missing client public key will also trigger the output of a WireGuard client configuration file with the server public key and the client key pair populated and ready to be imported into the user's WireGuard client. Lastly, if a hostname and domain are included in the INI, they will be used to make an FQDN to populate the `Endpoint` field in the WireGuard client configuration file.
+
+For convenience, an optional macOS shortcut file can be created that leads to the OPNsense console with one click.
 
 ## ISO Image
 
@@ -56,10 +60,34 @@ oscg -f xml
 oscg -f iso
 ```
 
+##### Write both XML and ISO configuration files
+
+```
+oscg -f both
+```
+
+##### Write macOS shortcut file
+
+```
+oscg -s
+```
+
 ##### Delete all existing output files
 
 ```
 oscg -c
+```
+
+##### Print the OPNsense console URL
+
+```
+oscg -u
+```
+
+##### Print the XML config for debugging
+
+```
+oscg -d
 ```
 
 ## Class Usage
@@ -79,12 +107,16 @@ ini_config.read('opnsense_config.ini')
 gc = oscg.core.GenerateConfigs(ini_config)
 opnsense_config = gc.os_config
 wireguard_config = gc.wg_config
+macos_shortcut = gc.mac_shortcut
 
 config_path = pathlib.Path('config.xml')
 config_path.write_text(opnsense_config)
 
 wg_path = pathlib.Path('WGBootstrap.conf')
 wg_path.write_text(wireguard_config)
+
+sc_path = pathlib.Path('WGBootstrap.url')
+sc_path.write_text(macos_shortcut)
 ```
 
 ### Example INI
