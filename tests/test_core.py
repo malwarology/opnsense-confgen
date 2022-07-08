@@ -507,6 +507,25 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         self.assertIsNone(wg_config, 'WireGuard config property is not None.')
 
+    def test_mac_shortcut_prop(self):
+        """Test that the macOS shortcut property returns the correct data."""
+        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
+
+        self.gc._gen_os_config()
+        mac_shortcut = self.gc.mac_shortcut
+
+        self.assertRegex(mac_shortcut, config_re, 'Shortcut for macOS not returned correctly from property.')
+
+    def test_no_mac_shortcut_prop(self):
+        """Test that the macOS shortcut property returns None when WireGuard bootstrap is not in config INI."""
+        config_local = copy.deepcopy(config_dict)
+        del config_local['WGB']
+        gcl = oscg.core.GenerateConfigs(config_local, testing=True)
+        gcl._gen_os_config()
+        mac_shortcut = self.gc.mac_shortcut
+
+        self.assertIsNone(mac_shortcut, 'Shortcut property is not None.')
+
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)
