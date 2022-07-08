@@ -39,6 +39,10 @@ class TestOutputEnum(unittest.TestCase):
         """Test the name of the WireGuard path object."""
         self.assertEqual(self.op.WG.value.name, 'WGBootstrap.conf', 'WireGuard client config filename not as expected.')
 
+    def test_shorcut_name(self):
+        """Test the name of the macOS shortcut path object."""
+        self.assertEqual(self.op.URL.value.name, 'WGBootstrap.url', 'Shortcut filename not as expected.')
+
     def test_example_name(self):
         """Test the name of the example ini path object."""
         self.assertEqual(self.op.EX.value.name, 'opnsense_config_example.ini', 'Example INI filename not as expected.')
@@ -237,6 +241,34 @@ class TestGenConfigs(unittest.TestCase):
         _, wg_config, _, _ = oscg.cli._generate_configs(ini_path)
 
         self.assertIsNone(wg_config, 'None type not returned when expected.')
+
+    def test_shortcut_obj_with_wg(self):
+        """Test that the returned macOS shortcut object is the correct type with WireGuard."""
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
+        _, _, mac_shortcut, _ = oscg.cli._generate_configs(ini_path)
+
+        self.assertIsInstance(mac_shortcut, str, 'String not returned when expected.')
+
+    def test_shortcut_obj_without_wg(self):
+        """Test that the returned macOS shortcut object is the correct type without WireGuard."""
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_wg.txt')
+        _, _, mac_shortcut, _ = oscg.cli._generate_configs(ini_path)
+
+        self.assertIsNone(mac_shortcut, 'None type not returned when expected.')
+
+    def test_console_url_obj_with_wg(self):
+        """Test that the returned console URL object is the correct type with WireGuard."""
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_full.txt')
+        _, _, _, console_url = oscg.cli._generate_configs(ini_path)
+
+        self.assertIsInstance(console_url, str, 'String not returned when expected.')
+
+    def test_console_url_obj_without_wg(self):
+        """Test that the returned console URL object is the correct type without WireGuard."""
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_wg.txt')
+        _, _, _, console_url = oscg.cli._generate_configs(ini_path)
+
+        self.assertIsNone(console_url, 'None type not returned when expected.')
 
     def test_debug_output_with_wg(self):
         """Test that the debug output text is correct with WireGuard."""
@@ -470,6 +502,72 @@ class TestWriteISO(unittest.TestCase):
         self.td.cleanup()
 
 
+class TestWriteShortcut(unittest.TestCase):
+    """Test that the macOS shortcut file is written properly."""
+
+    def setUp(self):
+        """Prepare temporary directory."""
+        self.td = tempfile.TemporaryDirectory()
+        os.chdir(self.td.name)
+        ini_path = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
+        _, _, self.shortcut, _ = oscg.cli._generate_configs(ini_path)
+
+    def test_sc_write(self):
+        """Test that the macOS shortcut file is created correctly."""
+        output_path = oscg.cli._Output.URL.value
+        with contextlib.redirect_stdout(io.StringIO()):
+            oscg.cli._write_mac_shortcut(self.shortcut)
+
+        self.assertTrue(output_path.exists(), 'Shortcut not created.')
+
+    def test_sc_write_stdout(self):
+        """Test that the stdout message is correct."""
+        message = 'Console URL macOS internet shortcut written to: WGBootstrap.url\n'
+        with contextlib.redirect_stdout(io.StringIO()) as f:
+            oscg.cli._write_mac_shortcut(self.shortcut)
+        stdout = f.getvalue()
+
+        self.assertEqual(stdout, message, 'Message not as expected.')
+
+    def test_sc_write_content(self):
+        """Test that the macOS shortcut file content is created correctly."""
+        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
+        output_path = oscg.cli._Output.URL.value
+        with contextlib.redirect_stdout(io.StringIO()):
+            oscg.cli._write_mac_shortcut(self.shortcut)
+        output = output_path.read_text()
+
+        self.assertRegex(output, config_re, 'Shortcut file content incorrect.')
+
+    @unittest.mock.patch('builtins.input', side_effect=['yes'])
+    def test_sc_overwrite(self, mock_inputs):
+        """Test macOS shortcut file creation when file exists already."""
+        dummy_data = 'DUMMYDATA'
+        output_path = oscg.cli._Output.URL.value
+        output_path.write_text(dummy_data)
+        with contextlib.redirect_stdout(io.StringIO()):
+            oscg.cli._write_mac_shortcut(self.shortcut)
+        file_data = output_path.read_text()
+
+        self.assertNotEqual(file_data, dummy_data, 'Shortcut not overwritten.')
+
+    @unittest.mock.patch('builtins.input', side_effect=['no'])
+    def test_sc_no_overwrite(self, mock_inputs):
+        """Test macOS shortcut file not overwritten when file exists already."""
+        dummy_data = 'DUMMYDATA'
+        output_path = oscg.cli._Output.URL.value
+        output_path.write_text(dummy_data)
+        with contextlib.redirect_stdout(io.StringIO()):
+            oscg.cli._write_mac_shortcut(self.shortcut)
+        file_data = output_path.read_text()
+
+        self.assertEqual(file_data, dummy_data, 'Shortcut overwritten.')
+
+    def tearDown(self):
+        """Cleanup the temporary directory."""
+        self.td.cleanup()
+
+
 class TestMainArguments(unittest.TestCase):
     """Check that command line arguments work as expected."""
 
@@ -597,6 +695,34 @@ class TestMainArguments(unittest.TestCase):
                 output = output_path.value.read_bytes()
 
                 self.assertRegex(output, config_re, f'{output_path.name} config file content incorrect.')
+
+    @unittest.mock.patch('argparse._sys.argv', ['oscg', '-s'])
+    def test_sc(self):
+        """Test that the macOS file content is created correctly."""
+        config_re = r'\[InternetShortcut\]\nURL=https://172\.19\.0\.1/\n'
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
+        dst = pathlib.Path('opnsense_config.ini')
+        shutil.copy(src, dst)
+        output_path = oscg.cli._Output.URL.value
+        with contextlib.redirect_stdout(io.StringIO()):
+            oscg.cli.main()
+        output = output_path.read_text()
+
+        self.assertRegex(output, config_re, 'Shortcut file content incorrect.')
+
+    @unittest.mock.patch('argparse._sys.argv', ['oscg', '-u'])
+    def test_url(self):
+        """Test that the console url output text is correct."""
+        expected = THIS_DIR.joinpath('data').joinpath('url_console_output.txt').read_text()
+        src = THIS_DIR.joinpath('data').joinpath('ini_no_cpub.txt')
+        dst = pathlib.Path('opnsense_config.ini')
+        shutil.copy(src, dst)
+
+        with contextlib.redirect_stdout(io.StringIO()) as f:
+            oscg.cli.main()
+        output = f.getvalue()
+
+        self.assertEqual(output, expected, 'Expected console output with URL not emitted.')
 
     @unittest.mock.patch('argparse._sys.argv', ['oscg'])
     def test_wg(self):

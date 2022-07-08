@@ -1,0 +1,3 @@
+OPNsense configuration written to: config.xml
+WireGuard client configuration written to: WGBootstrap.conf
+https://172.19.0.1/
