@@ -206,3 +206,5 @@ client_ip = 172.19.0.2/32
 The automatically created `WireGuard (Group)` interface that is normally part of the WireGuard plugin is removed during the OPNsense install process.
 
 To workaround this issue, login to the OPNsense console, navigate to the `Interfaces` menu and select `Assignments`. In the pane that appears on the right, click `Save`. This will recreate the `WireGuard (Group)` interface.
+
+The Github issue for this bug is here: https://github.com/opnsense/core/issues/5768
