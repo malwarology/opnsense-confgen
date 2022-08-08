@@ -4,7 +4,7 @@ This package takes a Python ConfigParser formatted INI file and generates a read
 
 More information about the OPNsense importer can be found [here](https://docs.opnsense.org/manual/install.html#opnsense-importer).
 
-There are three potential output files:
+There are five potential output files:
 
 | Filename | Content |
 |--------- | ------- |
