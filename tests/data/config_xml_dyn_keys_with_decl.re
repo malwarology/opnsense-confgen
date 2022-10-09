@@ -246,6 +246,8 @@
     <ssh>
       <group>admins</group>
     </ssh>
+    <rrdbackup>-1</rrdbackup>
+    <netflowbackup>-1</netflowbackup>
     <firmware version="1\.0\.0">
       <mirror />
       <flavour />
@@ -519,7 +521,7 @@
       <general version="0\.0\.1">
         <enabled>1</enabled>
       </general>
-      <server version="0\.0\.3">
+      <server version="0\.0\.4">
         <servers>
           <server uuid="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}">
             <enabled>1</enabled>
@@ -537,7 +539,7 @@
           </server>
         </servers>
       </server>
-      <client version="0\.0\.6">
+      <client version="0\.0\.7">
         <clients>
           <client uuid="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}">
             <enabled>1</enabled>

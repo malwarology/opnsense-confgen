@@ -4,7 +4,7 @@
     <general version="0.0.1">
       <enabled>1</enabled>
     </general>
-    <server version="0.0.3">
+    <server version="0.0.4">
       <servers>
         <server>
           <enabled>1</enabled>
@@ -22,7 +22,7 @@
         </server>
       </servers>
     </server>
-    <client version="0.0.6">
+    <client version="0.0.7">
       <clients>
         <client>
           <enabled>1</enabled>

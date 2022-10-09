@@ -245,6 +245,8 @@
     <ssh>
       <group>admins</group>
     </ssh>
+    <rrdbackup>-1</rrdbackup>
+    <netflowbackup>-1</netflowbackup>
     <firmware version="1\.0\.0">
       <mirror />
       <flavour />
