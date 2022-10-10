@@ -38,3 +38,7 @@ port = 51821
 server_privkey = w9aO9TLbNoHxic3TLzniwP7b4dVnmVETe5s60TsK33A=
 server_ip = 172.19.0.1/24
 client_ip = 172.19.0.2/32
+
+[API]
+key = Ku7rxJotUKNM+SNQtMhL2yNzkp/XQF21ZY25HevhRER67eyUk2CyJQalvq51zd5bG5gYjS5b4pG4YnSS
+secret = $6$$x.ZrJq6a4Nue2upbwKxz/57wN50arCSH3vRUEzHFfU4wiF7CDPycSiCfkTJUUO2RdPOiwsOw0cuwv1zM85RSl0

@@ -231,6 +231,22 @@ class GenerateConfigs:
 
         self._root.find('dhcpd').append(opt_dhcp)
 
+    def _add_apikey(self):
+        """Add optional root API key."""
+        apikey_template = importlib.resources.read_text('oscg.templates', 'apikey.xml')
+        apikey = xml.etree.ElementTree.fromstring(apikey_template)
+        apikey.find('item').find('key').text = self._ini_config['API']['key']
+        apikey.find('item').find('secret').text = self._ini_config['API']['secret']
+        self._root.find('system').find('user').append(apikey)
+        expires = xml.etree.ElementTree.Element('expires')
+        self._root.find('system').find('user').append(expires)
+        authorizedkeys = xml.etree.ElementTree.Element('authorizedkeys')
+        self._root.find('system').find('user').append(authorizedkeys)
+        ipsecpsk = xml.etree.ElementTree.Element('ipsecpsk')
+        self._root.find('system').find('user').append(ipsecpsk)
+        otp_seed = xml.etree.ElementTree.Element('otp_seed')
+        self._root.find('system').find('user').append(otp_seed)
+
     def _gen_os_config(self):
         """Generate an OPNsense configuration file."""
         self._set_revision()
@@ -256,6 +272,10 @@ class GenerateConfigs:
             self._add_opt_if(section_matches)
             if self._ini_config[section_matches.group(0)].get('dhcp_start'):
                 self._add_opt_dhcp(section_matches)
+
+        # Handle API bootstrap if needed.
+        if self._ini_config.has_section('API'):
+            self._add_apikey()
 
         xml.etree.ElementTree.indent(self._root, space='  ')
 

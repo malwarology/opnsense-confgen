@@ -218,6 +218,16 @@
       <groupname>admins</groupname>
       <password>\$2y\$10\$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
+      <apikeys>
+        <item>
+          <key>Ku7rxJotUKNM\+SNQtMhL2yNzkp/XQF21ZY25HevhRER67eyUk2CyJQalvq51zd5bG5gYjS5b4pG4YnSS</key>
+          <secret>\$6\$\$x\.ZrJq6a4Nue2upbwKxz/57wN50arCSH3vRUEzHFfU4wiF7CDPycSiCfkTJUUO2RdPOiwsOw0cuwv1zM85RSl0</secret>
+        </item>
+      </apikeys>
+      <expires />
+      <authorizedkeys />
+      <ipsecpsk />
+      <otp_seed />
     </user>
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>

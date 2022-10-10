@@ -28,6 +28,12 @@ An optional feature is the WireGuard bootstrap. If a `WGB` section is provided i
 
 The WireGuard bootstrap has a number of options. If the INI contains a server private key, it will be used to derive a public key. That resulting key pair will be used to populate the configuration output. If the server private key is missing from the INI file, a new key pair will be generated using libsodium which will then be used to populate the configuration output. If a WireGuard client public key is present, it will be used to populate the endpoint section of the configuration output. If this public key is missing, a new key pair will be generated and used to populate the configuration output. A missing client public key will also trigger the output of a WireGuard client configuration file with the server public key and the client key pair populated and ready to be imported into the user's WireGuard client. Lastly, if a hostname and domain are included in the INI, they will be used to make an FQDN to populate the `Endpoint` field in the WireGuard client configuration file.
 
+## API Key Bootstrap
+
+Another optional feature is to add a root API key bootstrap. If a `API` section is provided in the INI, then the provided key and secret will be appended to the user section in the configuration for the root user. This API key can be used immediately after install is complete to make further configuration changes to the OPNsense instance.
+
+## Web Console Shortcut
+
 For convenience, an optional macOS shortcut file can be created that leads to the OPNsense console with one click.
 
 ## ISO Image
@@ -163,6 +169,10 @@ server_privkey = AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 server_ip = 172.19.0.1/24
 client_ip = 172.19.0.2/32
 client_pubkey = AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
+
+[API]
+key = AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+secret = $6$$AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIC
 ```
 
 **Note:** The keys in the example above are deliberately malformed so that they are not accidentally used in a real deployment.

@@ -21,36 +21,52 @@ import oscg.core
 THIS_DIR = pathlib.Path(__file__).parent
 
 config_dict = dict()
-config_dict['Host'] = {'hostname': 'firewall',
-                       'domain': 'example.com',
-                       'dns': '198.51.100.100'}
-config_dict['WAN'] = {'if': 'vtnet0',
-                      'ip': '192.0.2.10',
-                      'subnet': '24',
-                      'gateway': '192.0.2.1'}
-config_dict['LAN'] = {'if': 'vtnet1',
-                      'ip': '172.16.0.1',
-                      'subnet': '24',
-                      'description': 'Workstations',
-                      'dhcp_start': '172.16.0.10',
-                      'dhcp_end': '172.16.0.250'}
-config_dict['OPT1'] = {'if': 'vtnet2',
-                       'ip': '172.17.0.1',
-                       'subnet': '24',
-                       'description': 'Servers',
-                       'dhcp_start': '172.17.0.10',
-                       'dhcp_end': '172.17.0.250'}
-config_dict['OPT2'] = {'if': 'vtnet3',
-                       'ip': '172.18.0.1',
-                       'subnet': '24',
-                       'description': 'DMZ',
-                       'dhcp_start': '172.18.0.10',
-                       'dhcp_end': '172.18.0.250'}
-config_dict['WGB'] = {'port': '51821',
-                      'server_privkey': 'w9aO9TLbNoHxic3TLzniwP7b4dVnmVETe5s60TsK33A=',
-                      'server_ip': '172.19.0.1/24',
-                      'client_ip': '172.19.0.2/32',
-                      'client_pubkey': 'Ybc61c6eXt2wDmpVw92LSsmZFkQQiBDsHY24WZiziDQ='}
+config_dict['Host'] = {
+    'hostname': 'firewall',
+    'domain': 'example.com',
+    'dns': '198.51.100.100'
+}
+config_dict['WAN'] = {
+    'if': 'vtnet0',
+    'ip': '192.0.2.10',
+    'subnet': '24',
+    'gateway': '192.0.2.1'
+}
+config_dict['LAN'] = {
+    'if': 'vtnet1',
+    'ip': '172.16.0.1',
+    'subnet': '24',
+    'description': 'Workstations',
+    'dhcp_start': '172.16.0.10',
+    'dhcp_end': '172.16.0.250'
+}
+config_dict['OPT1'] = {
+    'if': 'vtnet2',
+    'ip': '172.17.0.1',
+    'subnet': '24',
+    'description': 'Servers',
+    'dhcp_start': '172.17.0.10',
+    'dhcp_end': '172.17.0.250'
+}
+config_dict['OPT2'] = {
+    'if': 'vtnet3',
+    'ip': '172.18.0.1',
+    'subnet': '24',
+    'description': 'DMZ',
+    'dhcp_start': '172.18.0.10',
+    'dhcp_end': '172.18.0.250'
+}
+config_dict['WGB'] = {
+    'port': '51821',
+    'server_privkey': 'w9aO9TLbNoHxic3TLzniwP7b4dVnmVETe5s60TsK33A=',
+    'server_ip': '172.19.0.1/24',
+    'client_ip': '172.19.0.2/32',
+    'client_pubkey': 'Ybc61c6eXt2wDmpVw92LSsmZFkQQiBDsHY24WZiziDQ='
+}
+config_dict['API'] = {
+    'key': 'Ku7rxJotUKNM+SNQtMhL2yNzkp/XQF21ZY25HevhRER67eyUk2CyJQalvq51zd5bG5gYjS5b4pG4YnSS',
+    'secret': '$6$$x.ZrJq6a4Nue2upbwKxz/57wN50arCSH3vRUEzHFfU4wiF7CDPycSiCfkTJUUO2RdPOiwsOw0cuwv1zM85RSl0'
+}
 
 
 class TestGeneratorClassInit(unittest.TestCase):
@@ -402,6 +418,16 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         self.assertEqual(section_str, section, 'DHCP settings not set as expected.')
 
+    def test_apikey(self):
+        """Test that the API key bootstrap is added to the user section correctly."""
+        section_str = THIS_DIR.joinpath('data').joinpath('sections').joinpath('user.xml').read_text()
+
+        self.gc._add_apikey()
+
+        section = xml.etree.ElementTree.tostring(self.gc._root.find('system').find('user'), encoding='unicode')
+
+        self.assertEqual(section_str, section, 'User section with API key is not set as expected.')
+
     def test_gen_os_config(self):
         """Test that the full configuration generation function works as expected."""
         config_re = THIS_DIR.joinpath('data').joinpath('config_xml_stat_keys.re').read_text().strip()
@@ -499,6 +525,19 @@ class TestGeneratorClassFunct(unittest.TestCase):
         section = xml.etree.ElementTree.tostring(gcl._root, encoding='unicode')
 
         self.assertRegex(section, config_re, 'Output not formatted correctly, no WireGuard.')
+
+    def test_gen_os_config_no_apikey(self):
+        """Test that the full configuration generation function works as expected without API key bootstrap."""
+        config_re = THIS_DIR.joinpath('data').joinpath('config_xml_no_apikey.re').read_text().strip()
+
+        config_local = copy.deepcopy(config_dict)
+        del config_local['API']
+        gcl = oscg.core.GenerateConfigs(config_local, testing=True)
+        gcl._gen_os_config()
+
+        section = xml.etree.ElementTree.tostring(gcl._root, encoding='unicode')
+
+        self.assertRegex(section, config_re, 'Output not formatted correctly, no API key bootstrap.')
 
     def test_wg_config_prop_no_wireguard(self):
         """Test that the WireGuard config property returns None when config is not generated."""

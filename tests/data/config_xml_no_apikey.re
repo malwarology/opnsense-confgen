@@ -218,16 +218,6 @@
       <groupname>admins</groupname>
       <password>\$2y\$10\$YRVoF4SgskIsrXOvOQjGieB9XqHPRra9R7d80B3BZdbY/j21TwBfS</password>
       <uid>0</uid>
-      <apikeys>
-        <item>
-          <key>Ku7rxJotUKNM\+SNQtMhL2yNzkp/XQF21ZY25HevhRER67eyUk2CyJQalvq51zd5bG5gYjS5b4pG4YnSS</key>
-          <secret>\$6\$\$x\.ZrJq6a4Nue2upbwKxz/57wN50arCSH3vRUEzHFfU4wiF7CDPycSiCfkTJUUO2RdPOiwsOw0cuwv1zM85RSl0</secret>
-        </item>
-      </apikeys>
-      <expires />
-      <authorizedkeys />
-      <ipsecpsk />
-      <otp_seed />
     </user>
     <nextuid>2000</nextuid>
     <nextgid>2000</nextgid>
@@ -260,6 +250,7 @@
     <firmware version="1\.0\.0">
       <mirror />
       <flavour />
+      <plugins>os-wireguard</plugins>
     </firmware>
     <dnsserver>198\.51\.100\.100</dnsserver>
     <language>en_US</language>
@@ -300,6 +291,21 @@
       <type>none</type>
       <virtual>1</virtual>
     </lo0>
+    <wireguard>
+      <internal_dynamic>1</internal_dynamic>
+      <enable>1</enable>
+      <if>wireguard</if>
+      <descr>WireGuard \(Group\)</descr>
+      <type>group</type>
+      <virtual>1</virtual>
+    </wireguard>
+    <opt0>
+      <if>wg1</if>
+      <descr>WGB</descr>
+      <enable>1</enable>
+      <lock>1</lock>
+      <spoofmac />
+    </opt0>
     <opt1>
       <if>vtnet2</if>
       <descr>Servers</descr>
@@ -382,6 +388,22 @@
   <filter>
     <rule>
       <type>pass</type>
+      <interface>wan</interface>
+      <ipprotocol>inet</ipprotocol>
+      <statetype>keep state</statetype>
+      <direction>in</direction>
+      <quick>1</quick>
+      <protocol>udp</protocol>
+      <source>
+        <any>1</any>
+      </source>
+      <destination>
+        <network>wanip</network>
+        <port>51821</port>
+      </destination>
+    </rule>
+    <rule>
+      <type>pass</type>
       <ipprotocol>inet</ipprotocol>
       <descr>Default allow LAN to any rule</descr>
       <interface>lan</interface>
@@ -402,6 +424,22 @@
       </source>
       <destination>
         <any />
+      </destination>
+    </rule>
+    <rule>
+      <type>pass</type>
+      <interface>opt0</interface>
+      <ipprotocol>inet</ipprotocol>
+      <statetype>keep state</statetype>
+      <direction>in</direction>
+      <quick>1</quick>
+      <protocol>tcp</protocol>
+      <source>
+        <network>opt0</network>
+      </source>
+      <destination>
+        <network>opt0ip</network>
+        <port>443</port>
       </destination>
     </rule>
   </filter>
@@ -477,4 +515,43 @@
       <fargw>0</fargw>
     </gateway_item>
   </gateways>
+  <OPNsense>
+    <wireguard>
+      <general version="0\.0\.1">
+        <enabled>1</enabled>
+      </general>
+      <server version="0\.0\.4">
+        <servers>
+          <server uuid="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}">
+            <enabled>1</enabled>
+            <name>WGBootstrap</name>
+            <instance>1</instance>
+            <pubkey>Pm76qcDtNmlPg3ecorCCiplqArUhP2YMYbehpodKwkQ=</pubkey>
+            <privkey>w9aO9TLbNoHxic3TLzniwP7b4dVnmVETe5s60TsK33A=</privkey>
+            <port>51821</port>
+            <mtu />
+            <dns />
+            <tunneladdress>172\.19\.0\.1/24</tunneladdress>
+            <disableroutes>0</disableroutes>
+            <gateway />
+            <peers>[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}</peers>
+          </server>
+        </servers>
+      </server>
+      <client version="0\.0\.7">
+        <clients>
+          <client uuid="[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}">
+            <enabled>1</enabled>
+            <name>WGBootstrap</name>
+            <pubkey>Ybc61c6eXt2wDmpVw92LSsmZFkQQiBDsHY24WZiziDQ=</pubkey>
+            <psk />
+            <tunneladdress>172\.19\.0\.2/32</tunneladdress>
+            <serveraddress />
+            <serverport />
+            <keepalive />
+          </client>
+        </clients>
+      </client>
+    </wireguard>
+  </OPNsense>
 </opnsense>
