@@ -21,7 +21,6 @@ class TestExample(unittest.TestCase):
     def setUp(self):
         """Generate the ConfigParser object."""
         self.oscg_config = oscg.example.generate()
-        self.maxDiff = None
 
     def test_dict_equal(self):
         """Test that the configutation object returned matches the expected."""
