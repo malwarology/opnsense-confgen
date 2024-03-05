@@ -1,4 +1,4 @@
-# Copyright 2022 Malwarology LLC
+# Copyright 2024 Malwarology LLC
 #
 # Use of this source code is governed by an MIT-style
 # license that can be found in the LICENSE file or at
@@ -21,7 +21,7 @@ class GenerateConfigs:
     """Class for generating an OPNsense config and optionally a WireGuard client config."""
 
     def __init__(self, config, testing=False):
-        with importlib.resources.open_text('oscg.templates', 'config.xml') as config_template:
+        with (importlib.resources.files('oscg.templates') / 'config.xml').open('r') as config_template:
             tree = xml.etree.ElementTree.parse(config_template)
         self._root = tree.getroot()
         if isinstance(config, dict):
@@ -145,33 +145,33 @@ class GenerateConfigs:
     def _add_wg_if(self):
         """Append WireGuard interfaces to configuration."""
         # Append WireGuard interface group.
-        wg_grp_template = importlib.resources.read_text('oscg.templates', 'wg_grp.xml')
-        wg_grp = xml.etree.ElementTree.fromstring(wg_grp_template)
-        self._root.find('interfaces').append(wg_grp)
+        with (importlib.resources.files('oscg.templates') / 'wg_grp.xml').open('r') as wg_grp_template:
+            wg_grp = xml.etree.ElementTree.fromstring(wg_grp_template.read())
+            self._root.find('interfaces').append(wg_grp)
 
         # Append wg1 interface.
-        wg_if_template = importlib.resources.read_text('oscg.templates', 'wg_if.xml')
-        wg_if = xml.etree.ElementTree.fromstring(wg_if_template)
-        self._root.find('interfaces').append(wg_if)
+        with (importlib.resources.files('oscg.templates') / 'wg_if.xml').open('r') as wg_if_template:
+            wg_if = xml.etree.ElementTree.fromstring(wg_if_template.read())
+            self._root.find('interfaces').append(wg_if)
 
     def _add_wg_fw(self):
         """Add firewall rules relating to WireGuard."""
         # Insert firewall rule to allow WireGuard traffic on WAN interface at top of rule set.
-        fw_wg_template = importlib.resources.read_text('oscg.templates', 'fw_wg.xml')
-        fw_wg = xml.etree.ElementTree.fromstring(fw_wg_template)
-        fw_wg.find('destination').find('port').text = self._ini_config['WGB']['port']
-        self._root.find('filter').insert(0, fw_wg)
+        with (importlib.resources.files('oscg.templates') / 'fw_wg.xml').open('r') as fw_wg_template:
+            fw_wg = xml.etree.ElementTree.fromstring(fw_wg_template.read())
+            fw_wg.find('destination').find('port').text = self._ini_config['WGB']['port']
+            self._root.find('filter').insert(0, fw_wg)
 
         # Append firewall rule allowing access to OPNsense admin portal from WireGuard interface.
-        fw_admin_template = importlib.resources.read_text('oscg.templates', 'fw_admin.xml')
-        fw_admin = xml.etree.ElementTree.fromstring(fw_admin_template)
-        self._root.find('filter').append(fw_admin)
+        with (importlib.resources.files('oscg.templates') / 'fw_admin.xml').open('r') as fw_admin_template:
+            fw_admin = xml.etree.ElementTree.fromstring(fw_admin_template.read())
+            self._root.find('filter').append(fw_admin)
 
     def _add_wg_settings(self):
         """Append WireGuard settings to configuration."""
-        wg_conf_template = importlib.resources.read_text('oscg.templates', 'wg_conf.xml')
-        wg_conf = xml.etree.ElementTree.fromstring(wg_conf_template)
-        wgc = wg_conf.find('wireguard')
+        with (importlib.resources.files('oscg.templates') / 'wg_conf.xml').open('r') as wg_conf_template:
+            wg_conf = xml.etree.ElementTree.fromstring(wg_conf_template.read())
+            wgc = wg_conf.find('wireguard')
 
         # Add server endpoint settings.
         wg_server = wgc.find('server').find('servers').find('server')
@@ -205,36 +205,36 @@ class GenerateConfigs:
         """Append optional interface settings to configuration."""
         section = match.group(0)
 
-        opt_if_template = importlib.resources.read_text('oscg.templates', 'opt_if.xml')
-        opt_if = xml.etree.ElementTree.fromstring(opt_if_template)
+        with (importlib.resources.files('oscg.templates') / 'opt_if.xml').open('r') as opt_if_template:
+            opt_if = xml.etree.ElementTree.fromstring(opt_if_template.read())
 
-        opt_if.tag = 'opt{}'.format(match.group('number'))
-        opt_if.find('if').text = self._ini_config[section]['if']
-        opt_if.find('descr').text = self._ini_config[section]['description']
-        opt_if.find('ipaddr').text = self._ini_config[section]['ip']
-        opt_if.find('subnet').text = self._ini_config[section]['subnet']
+            opt_if.tag = 'opt{}'.format(match.group('number'))
+            opt_if.find('if').text = self._ini_config[section]['if']
+            opt_if.find('descr').text = self._ini_config[section]['description']
+            opt_if.find('ipaddr').text = self._ini_config[section]['ip']
+            opt_if.find('subnet').text = self._ini_config[section]['subnet']
 
-        self._root.find('interfaces').append(opt_if)
+            self._root.find('interfaces').append(opt_if)
 
     def _add_opt_dhcp(self, match):
         """Append optional interface DHCP settings to configuration."""
         section = match.group(0)
 
-        opt_dhcp_template = importlib.resources.read_text('oscg.templates', 'opt_dhcp.xml')
-        opt_dhcp = xml.etree.ElementTree.fromstring(opt_dhcp_template)
+        with (importlib.resources.files('oscg.templates') / 'opt_dhcp.xml').open('r') as opt_dhcp_template:
+            opt_dhcp = xml.etree.ElementTree.fromstring(opt_dhcp_template.read())
 
-        opt_dhcp.tag = 'opt{}'.format(match.group('number'))
-        opt_dhcp.find('gateway').text = self._ini_config[section]['ip']
-        opt_dhcp.find('range').find('from').text = self._ini_config[section].get('dhcp_start')
-        opt_dhcp.find('range').find('to').text = self._ini_config[section]['dhcp_end']
-        opt_dhcp.find('dnsserver').text = self._ini_config[section]['ip']
+            opt_dhcp.tag = 'opt{}'.format(match.group('number'))
+            opt_dhcp.find('gateway').text = self._ini_config[section]['ip']
+            opt_dhcp.find('range').find('from').text = self._ini_config[section].get('dhcp_start')
+            opt_dhcp.find('range').find('to').text = self._ini_config[section]['dhcp_end']
+            opt_dhcp.find('dnsserver').text = self._ini_config[section]['ip']
 
-        self._root.find('dhcpd').append(opt_dhcp)
+            self._root.find('dhcpd').append(opt_dhcp)
 
     def _add_apikey(self):
         """Add optional root API key."""
-        apikey_template = importlib.resources.read_text('oscg.templates', 'apikey.xml')
-        apikey = xml.etree.ElementTree.fromstring(apikey_template)
+        with (importlib.resources.files('oscg.templates') / 'apikey.xml').open('r') as apikey_template:
+            apikey = xml.etree.ElementTree.fromstring(apikey_template.read())
         apikey.find('item').find('key').text = self._ini_config['API']['key']
         apikey.find('item').find('secret').text = self._ini_config['API']['secret']
         self._root.find('system').find('user').append(apikey)

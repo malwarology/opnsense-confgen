@@ -1,4 +1,4 @@
-# Copyright 2022 Malwarology LLC
+# Copyright 2024 Malwarology LLC
 #
 # Use of this source code is governed by an MIT-style
 # license that can be found in the LICENSE file or at
@@ -13,7 +13,6 @@ if needed. The config.xml output can optionally be exported as an ISO.
 """
 import argparse
 import configparser
-import distutils
 import enum
 import pathlib
 import sys
@@ -36,11 +35,7 @@ class _Output(enum.Enum):
 def _cleanup():
     """Delete all output files."""
     delete = input('Delete all output files? (y/N): ')
-    try:
-        proceed = distutils.util.strtobool(delete)
-    except ValueError:
-        proceed = False
-    if not proceed:
+    if not delete.lower() in ['y', 'yes']:
         sys.exit()
     for path in list(_Output):
         path.value.unlink(missing_ok=True)
@@ -61,12 +56,8 @@ def _check_path(path):
     """Check if path exists and ask if it should be overwritten."""
     if path.exists():
         overwrite = input('File "{}" exists, overwrite? (y/N): '.format(path.name))
-        try:
-            proceed = distutils.util.strtobool(overwrite)
-        except ValueError:
-            proceed = False
 
-        return proceed
+        return overwrite.lower() in ['y', 'yes']
 
     return True
 
