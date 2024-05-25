@@ -1,3 +1,53 @@
 [build-system]
-requires = ['setuptools>=70.0']
-build-backend = 'setuptools.build_meta'
+requires = ["setuptools>=70.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "opnsense-confgen"
+version = "2.3.2"
+dependencies = [
+    "pynacl",
+    "pycdlib"
+]
+requires-python = ">= 3.12.3"
+authors = [
+    { name = "Malwarology LLC" }
+]
+description = "Generate OPNsense configuration XML"
+readme = "README.md"
+keywords = ["opnsense", "configuration", "firewall", "install"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: System :: Networking :: Firewalls",
+    "Topic :: System :: Systems Administration",
+    "Topic :: Text Processing :: Markup :: XML",
+    "Topic :: Utilities"
+]
+
+[project.urls]
+Homepage = "https://github.com/malwarology/opnsense-confgen"
+Issues = "https://github.com/malwarology/opnsense-confgen/issues"
+
+[project.scripts]
+oscg = "oscg.cli:main"
+
+[tool.pycodestyle]
+max-line-length = 120
+
+[tool.pydocstyle]
+ignore = ["D104", "D107", "D203", "D213"]
+
+[tool.coverage.run]
+branch = true
+source = ["src"]
