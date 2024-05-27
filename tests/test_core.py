@@ -183,7 +183,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(self.gc._root.find('interfaces').find('lan'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'LAN interface section is not set as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'LAN interface section is not set as expected.')
 
     def test_lan_dhcp(self):
         """Test that the LAN DHCP section is set properly."""

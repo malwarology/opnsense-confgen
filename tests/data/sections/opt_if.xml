@@ -16,7 +16,6 @@
       <if />
       <descr />
       <enable>1</enable>
-      <spoofmac />
       <ipaddr />
       <subnet />
     </lan>

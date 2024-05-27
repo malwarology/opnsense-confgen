@@ -277,7 +277,6 @@
       <if></if>
       <descr></descr>
       <enable>1</enable>
-      <spoofmac/>
       <ipaddr></ipaddr>
       <subnet></subnet>
     </lan>

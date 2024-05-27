@@ -277,7 +277,6 @@
       <if>vtnet1</if>
       <descr>Workstations</descr>
       <enable>1</enable>
-      <spoofmac />
       <ipaddr>172\.16\.0\.1</ipaddr>
       <subnet>24</subnet>
     </lan>
