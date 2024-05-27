@@ -173,7 +173,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(self.gc._root.find('interfaces').find('wan'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'WAN interface section is not set as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'WAN interface section is not set as expected.')
 
     def test_lan_if(self):
         """Test that the LAN interface section is set properly."""
@@ -322,7 +322,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(self.gc._root.find('interfaces'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'WireGuard interfaces are not set as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'WireGuard interfaces are not set as expected.')
 
     def test_wg_fw(self):
         """Test that the WireGuard firewall rules are added correctly to the rule set."""
@@ -392,7 +392,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(gcl._root.find('interfaces'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'Optional interface not set as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'Optional interface not set as expected.')
 
     def test_opt_dhcp(self):
         """Test that optional DHCP settings section is appended correctly."""

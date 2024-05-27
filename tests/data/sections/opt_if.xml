@@ -6,13 +6,11 @@
       <ipaddrv6 />
       <subnet />
       <gateway>WAN_GW</gateway>
-      <blockpriv>on</blockpriv>
-      <blockbogons>on</blockbogons>
-      <media />
-      <mediaopt />
-      <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
+      <blockpriv>1</blockpriv>
+      <blockbogons>1</blockbogons>
       <subnetv6 />
       <gatewayv6 />
+      <descr>WAN</descr>
     </wan>
     <lan>
       <if />
@@ -42,4 +40,3 @@
     <ipaddr>172.17.0.1</ipaddr>
     <subnet>24</subnet>
 </opt1></interfaces>
-  

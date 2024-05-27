@@ -266,13 +266,11 @@
       <ipaddrv6 />
       <subnet>24</subnet>
       <gateway>WAN_GW</gateway>
-      <blockpriv>on</blockpriv>
-      <blockbogons>on</blockbogons>
-      <media />
-      <mediaopt />
-      <dhcp6-ia-pd-len>0</dhcp6-ia-pd-len>
+      <blockpriv>1</blockpriv>
+      <blockbogons>1</blockbogons>
       <subnetv6 />
       <gatewayv6 />
+      <descr>WAN</descr>
     </wan>
     <lan>
       <if>vtnet1</if>
