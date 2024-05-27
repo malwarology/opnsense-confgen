@@ -136,12 +136,6 @@ class GenerateConfigs:
 
         self.console_url = f'https://{server_ip}/'
 
-    def _add_wg_plugin(self):
-        """Add WireGuard plugin to configuration."""
-        plugins = xml.etree.ElementTree.Element('plugins')
-        plugins.text = 'os-wireguard'
-        self._root.find('system').find('firmware').append(plugins)
-
     def _add_wg_if(self):
         """Append WireGuard interfaces to configuration."""
         # Append WireGuard interface group.
@@ -262,7 +256,6 @@ class GenerateConfigs:
             if not self._ini_config['WGB'].get('client_pubkey'):
                 self._gen_wg_config()
             self._set_wg_console_url()
-            self._add_wg_plugin()
             self._add_wg_if()
             self._add_wg_fw()
             self._add_wg_settings()

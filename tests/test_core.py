@@ -122,7 +122,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(self.gc._root.find('system'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'System section is not set as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'System section is not set as expected.')
 
     def test_system_no_hostname(self):
         """Test that the system section is set properly with hostname not provided."""
@@ -135,10 +135,11 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(gcl._root.find('system'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'System section with hostname not provided not as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'System section with hostname not provided as expected.')
 
     def test_system_no_domain(self):
         """Test that the system section is set properly with domain not provided."""
+        self.maxDiff = None
         section_str = THIS_DIR.joinpath('data').joinpath('sections').joinpath('system_no_domain.xml').read_text()
 
         config_local = copy.deepcopy(config_dict)
@@ -148,7 +149,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(gcl._root.find('system'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'System section with domain not provided not as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'System section with domain not provided as expected.')
 
     def test_system_no_host_no_domain(self):
         """Test that the system section is set properly with hostname and domain not provided."""
@@ -162,7 +163,7 @@ class TestGeneratorClassFunct(unittest.TestCase):
 
         section = xml.etree.ElementTree.tostring(gcl._root.find('system'), encoding='unicode')
 
-        self.assertEqual(section_str, section, 'System section with hostname/domain not provided not as expected.')
+        self.assertEqual(section_str.strip(), section.strip(), 'System section host/domain not provided as expected.')
 
     def test_wan_if(self):
         """Test that the WAN interface section is set properly."""
@@ -312,16 +313,6 @@ class TestGeneratorClassFunct(unittest.TestCase):
         console_url = self.gc.console_url
 
         self.assertEqual(console_url, 'https://172.19.0.1/', 'Console URL not set properly.')
-
-    def test_plugin(self):
-        """Test that the plugin is added properly to the system configuration."""
-        section_str = THIS_DIR.joinpath('data').joinpath('sections').joinpath('plugin.xml').read_text()
-
-        self.gc._add_wg_plugin()
-
-        section = xml.etree.ElementTree.tostring(self.gc._root.find('system').find('firmware'), encoding='unicode')
-
-        self.assertEqual(section_str, section, 'Plugins section is not set as expected.')
 
     def test_wg_if(self):
         """Test that the WireGuard interface and interface group are both appended correctly to interfaces."""

@@ -257,10 +257,13 @@
     </ssh>
     <rrdbackup>-1</rrdbackup>
     <netflowbackup>-1</netflowbackup>
-    <firmware version="1\.0\.0">
+    <firmware version="1\.0\.1">
       <mirror />
       <flavour />
-      <plugins>os-wireguard</plugins>
+      <plugins />
+      <type />
+      <subscription />
+      <reboot />
     </firmware>
     <dnsserver>198\.51\.100\.100</dnsserver>
     <language>en_US</language>
