@@ -1,16 +1,15 @@
 <interfaces>
     <wan>
-      <enable>1</enable>
       <if />
-      <ipaddr />
-      <ipaddrv6 />
-      <subnet />
-      <gateway>WAN_GW</gateway>
+      <descr>WAN</descr>
+      <enable>1</enable>
+      <lock>1</lock>
+      <spoofmac />
       <blockpriv>1</blockpriv>
       <blockbogons>1</blockbogons>
-      <subnetv6 />
-      <gatewayv6 />
-      <descr>WAN</descr>
+      <ipaddr />
+      <subnet />
+      <gateway>WAN_GW</gateway>
     </wan>
     <lan>
       <if />

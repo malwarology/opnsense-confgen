@@ -261,17 +261,16 @@
   </system>
   <interfaces>
     <wan>
-      <enable>1</enable>
       <if>vtnet0</if>
-      <ipaddr>192\.0\.2\.10</ipaddr>
-      <ipaddrv6 />
-      <subnet>24</subnet>
-      <gateway>WAN_GW</gateway>
+      <descr>WAN</descr>
+      <enable>1</enable>
+      <lock>1</lock>
+      <spoofmac />
       <blockpriv>1</blockpriv>
       <blockbogons>1</blockbogons>
-      <subnetv6 />
-      <gatewayv6 />
-      <descr>WAN</descr>
+      <ipaddr>192\.0\.2\.10</ipaddr>
+      <subnet>24</subnet>
+      <gateway>WAN_GW</gateway>
     </wan>
     <lan>
       <if>vtnet1</if>
