@@ -20,9 +20,14 @@ import oscg.utils
 class GenerateConfigs:
     """Class for generating an OPNsense config and optionally a WireGuard client config."""
 
-    def __init__(self, config, testing=False):
-        with (importlib.resources.files('oscg.templates') / 'config.xml').open('r') as config_template:
-            tree = xml.etree.ElementTree.parse(config_template)
+    def __init__(self, config, baseXMLPath = None, testing=False):
+        if baseXMLPath:
+            with open(baseXMLPath, 'r') as existing_config:
+                tree = xml.etree.ElementTree.parse(existing_config)
+        else:
+            with (importlib.resources.files('oscg.templates') / 'config.xml').open('r') as config_template:
+                tree = xml.etree.ElementTree.parse(config_template)
+
         self._root = tree.getroot()
         if isinstance(config, dict):
             conf_parser = configparser.ConfigParser()
@@ -80,7 +85,8 @@ class GenerateConfigs:
         lan_dhcp.find('gateway').text = self._ini_config['LAN']['ip']
         lan_dhcp.find('range').find('from').text = self._ini_config['LAN']['dhcp_start']
         lan_dhcp.find('range').find('to').text = self._ini_config['LAN']['dhcp_end']
-        lan_dhcp.find('dnsserver').text = self._ini_config['LAN']['ip']
+        lan_dhcp.find('dnsserver').text = self._ini_config['LAN'].get('dnsserver') or self._ini_config['LAN']['ip']
+        lan_dhcp.find('ntpserver').text = self._ini_config['LAN'].get('ntpserver')
 
     def _set_gateway(self):
         """Set the gateway section of configuration."""
@@ -197,33 +203,43 @@ class GenerateConfigs:
 
     def _add_opt_if(self, match):
         """Append optional interface settings to configuration."""
-        section = match.group(0)
 
         with (importlib.resources.files('oscg.templates') / 'opt_if.xml').open('r') as opt_if_template:
             opt_if = xml.etree.ElementTree.fromstring(opt_if_template.read())
+            self._root.find('interfaces').append(self._set_opt_if(opt_if,match))
 
-            opt_if.tag = 'opt{}'.format(match.group('number'))
-            opt_if.find('if').text = self._ini_config[section]['if']
-            opt_if.find('descr').text = self._ini_config[section]['description']
-            opt_if.find('ipaddr').text = self._ini_config[section]['ip']
-            opt_if.find('subnet').text = self._ini_config[section]['subnet']
+    def _set_opt_if(self, xml, match):
+        """Set the optional interface configuration"""
+        section = match.group(0)
 
-            self._root.find('interfaces').append(opt_if)
+        xml.tag = 'opt{}'.format(match.group('number'))
+        xml.find('if').text = self._ini_config[section]['if']
+        xml.find('descr').text = self._ini_config[section]['description']
+        xml.find('ipaddr').text = self._ini_config[section]['ip']
+        xml.find('subnet').text = self._ini_config[section]['subnet']
+
+        return xml
+
 
     def _add_opt_dhcp(self, match):
         """Append optional interface DHCP settings to configuration."""
-        section = match.group(0)
-
         with (importlib.resources.files('oscg.templates') / 'opt_dhcp.xml').open('r') as opt_dhcp_template:
             opt_dhcp = xml.etree.ElementTree.fromstring(opt_dhcp_template.read())
+            self._root.find('dhcpd').append(self._set_opt_dhcp(opt_dhcp, match))
 
-            opt_dhcp.tag = 'opt{}'.format(match.group('number'))
-            opt_dhcp.find('gateway').text = self._ini_config[section]['ip']
-            opt_dhcp.find('range').find('from').text = self._ini_config[section].get('dhcp_start')
-            opt_dhcp.find('range').find('to').text = self._ini_config[section]['dhcp_end']
-            opt_dhcp.find('dnsserver').text = self._ini_config[section]['ip']
+    def _set_opt_dhcp(self, xml, match):
+        """Set the optional interface DHCP option"""
+        section = match.group(0)
 
-            self._root.find('dhcpd').append(opt_dhcp)
+        xml.tag = 'opt{}'.format(match.group('number'))
+        xml.find('gateway').text = self._ini_config[section]['ip']
+        xml.find('range').find('from').text = self._ini_config[section].get('dhcp_start')
+        xml.find('range').find('to').text = self._ini_config[section].get('dhcp_end')
+        xml.find('dnsserver').text = self._ini_config[section].get('dnsserver') or self._ini_config[section]['ip']
+        xml.find('ntpserver').text = self._ini_config[section].get('ntpserver')
+
+        return xml
+
 
     def _add_apikey(self):
         """Add optional root API key."""
@@ -244,12 +260,15 @@ class GenerateConfigs:
     def _gen_os_config(self):
         """Generate an OPNsense configuration file."""
         self._set_revision()
-        self._set_system()
-        self._set_wan_if()
-        self._set_lan_if()
-        self._set_lan_dhcp()
-        self._set_gateway()
-
+        if self._ini_config.has_section('HOST'):
+            self._set_system()
+        if self._ini_config.has_section('WAN'):
+            self._set_wan_if()
+            self._set_gateway()
+        if self._ini_config.has_section('LAN'):
+            self._set_lan_if()
+            self._set_lan_dhcp()
+            
         # Handle WireGuard bootstrap if needed.
         if self._ini_config.has_section('WGB'):
             self._check_serverkey()
@@ -262,9 +281,19 @@ class GenerateConfigs:
 
         # Handle optional interfaces if needed.
         for section_matches in self._find_opt():
-            self._add_opt_if(section_matches)
+
+            # Check if interface already exists in config
+            if optif := self._root.find('interfaces').find('opt{}'.format(section_matches.group('number'))):
+                self._set_opt_if(optif,section_matches)
+            else:
+                self._add_opt_if(section_matches)
+            
             if self._ini_config[section_matches.group(0)].get('dhcp_start'):
-                self._add_opt_dhcp(section_matches)
+                # Check if interface dhcp config already exists
+                if optifdhcp := self._root.find('dhcpd').find('opt{}'.format(section_matches.group('number'))):
+                    self._set_opt_dhcp(optifdhcp,section_matches)
+                else:
+                    self._add_opt_dhcp(section_matches)
 
         # Handle API bootstrap if needed.
         if self._ini_config.has_section('API'):
