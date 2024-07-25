@@ -190,7 +190,7 @@ class GenerateConfigs:
         opt_sections = list()
 
         for section in self._ini_config.sections():
-            if match := re.match(r'OPT(?P<number>\d)', section):
+            if match := re.match(r'OPT(?P<number>\d{1,12})', section):
                 opt_sections.append(match)
 
         return opt_sections
