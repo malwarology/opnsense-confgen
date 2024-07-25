@@ -71,11 +71,11 @@ def _get_path(filename):
     return path
 
 
-def _generate_configs(ini_path, debug=False):
+def _generate_configs(ini_path, xml_path=None, debug=False):
     """Run the core configuration generator and return configurations and optional console URL."""
     config = configparser.ConfigParser()
     config.read(ini_path)
-    gc = oscg.core.GenerateConfigs(config)
+    gc = oscg.core.GenerateConfigs(config, xml_path)
     if debug:
         gc.debug()
 
@@ -124,6 +124,8 @@ def main():
     parser = argparse.ArgumentParser(description='Generate OPNsense configuration XML')
     parser.add_argument('ini', nargs='?', metavar='INI', default='opnsense_config.ini',
                         help='Path to INI file, default: "opnsense_config.ini"')
+    parser.add_argument('xml', nargs='?', metavar='XML', default=None,
+                        help='Path to an OPNsense XML config file that is used as baseline"')
     parser.add_argument('-e', '--example', action='store_true', help='Write an example INI file then exit')
     parser.add_argument('-f', '--format', choices=['xml', 'iso', 'both'], default='xml',
                         help='Output format, default: xml')
@@ -140,7 +142,7 @@ def main():
     if args.example:
         _write_example()
 
-    os_config, wg_config, mac_shortcut, console_url = _generate_configs(_get_path(args.ini), debug=args.debug)
+    os_config, wg_config, mac_shortcut, console_url = _generate_configs(_get_path(args.ini), _get_path(args.xml) if args.xml else None, debug=args.debug)
 
     if args.format in ['xml', 'both']:
         _write_xml(os_config)
